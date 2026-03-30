@@ -7,6 +7,9 @@
 % Arguments
 %   <Symbol> = <Explanation> (<Units>)
 % ----------
+% Dependencies
+%   1) <Dependency 1>
+% ----------
 % Sources
 %   1) <Source 1>
 % ----------
