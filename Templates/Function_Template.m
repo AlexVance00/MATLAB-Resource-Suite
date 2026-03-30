@@ -1,15 +1,19 @@
 % <Function Purpose>
 % <Output> in (<Units>)
 % ----------
-% <Sources>
-% ----------
-% MATLAB Version <Version>
-% ----------
 % Assumptions
 %   1) <Assumption 1>
 % ----------
 % Arguments
 %   <Symbol> = <Explanation> (<Units>)
+% ----------
+% Sources
+%   1) <Source 1>
+% ----------
+% MATLAB Version <Oldest Version>, also compatible with:
+%   - <Later Version>
+% ----------
+% Developed by Alex Vance
 
 function result = GetResult(args)
 
