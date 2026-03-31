@@ -20,7 +20,7 @@
 function result = FunctionTemplate(args)
 
     % Allows arguments to be optional and assigned in the function call
-    %   as in: FunctionTemplate(<varname> = <value>, ...)
+    %   as in: FunctionTemplate(<arg_name> = <arg_val>, ...)
 
     % Classify Non-Optional Arguments
     arguments
@@ -45,7 +45,7 @@ function result = FunctionTemplate(args)
             
             % If any non-optional arguments are un-initialized, throws
             %   error
-            error("No input for non-optional '%s' parameter", arg_name);
+            error("No input for non-optional '%s' argument", arg_name);
         end
     end
 
