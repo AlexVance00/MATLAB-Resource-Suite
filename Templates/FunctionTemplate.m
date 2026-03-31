@@ -1,32 +1,30 @@
 % <Function Purpose>
 % <Output> in (<Units>)
-% ----------
+% -------------------------------------------------------------------------
 % Assumptions
 %   1) <Assumption 1>
-% ----------
+% -------------------------------------------------------------------------
 % Arguments
 %   <Symbol> = <Explanation> (<Units>)
-% ----------
+% -------------------------------------------------------------------------
 % Dependencies
 %   1) <Dependency 1>
-% ----------
+% -------------------------------------------------------------------------
 % Sources
 %   1) <Source 1>
-% ----------
+% -------------------------------------------------------------------------
 % MATLAB Version <Oldest Version>, also compatible with:
 %   - <Later Version>
-% ----------
+% -------------------------------------------------------------------------
 % Developed by Alex Vance
-
-function result = GetResult(args)
+function result = FunctionTemplate(args)
 
     % Allows arguments to be optional and assigned in the function call
-    %   as in: GetResult(<varname> = <value>, ...)
+    %   as in: FunctionTemplate(<varname> = <value>, ...)
 
     % Classify Non-Optional Arguments
     arguments
         args.arg_1 = [];
-        args.arg_2 = [];
     end
     arg_name_list = fieldnames(args);
 
@@ -36,12 +34,13 @@ function result = GetResult(args)
     % Makes variables out of args' fieldnames
     for i_fieldname = 1:length(arg_name_list)
         arg_name = arg_name_list{i_fieldname};
+        arg_val = args.(arg_name);
 
         % Input Checking
-        if ~isempty(args.(arg_name))
+        if ~isempty(arg_val)
 
             % Initializes given optional arguments
-            eval(append(arg_name, " = args.(arg_name);"));
+            eval(append(arg_name, " = arg_val;"));
         elseif ~ismember(arg_name, optional_arg_names)
             
             % If any non-optional arguments are un-initialized, throws
