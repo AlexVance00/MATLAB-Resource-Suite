@@ -30,8 +30,6 @@ classdef ClassTemplate
         % Sources
         %   1) <Source 1>
         % -----------------------------------------------------------------
-        % MATLAB Version <Oldest Version>, also compatible with:
-        %   - <Later Version>
         function result = GetResult(args)
         
             % Allows arguments to be optional and assigned in the function
