@@ -5,7 +5,7 @@
 %   2) Rigid body
 %   3) No tail dihedral
 %   4) Lateral symmetry
-%   5) Trapezoidal wing and tail horizontal surfae shapes
+%   5) Trapezoidal wing and tail horizontal surface shapes
 % -------------------------------------------------------------------------
 % Dependencies
 %   1) <Dependency 1>
