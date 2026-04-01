@@ -1912,19 +1912,37 @@ classdef Aircraft
         end
 
         % Solves for but does not return 
-        function obj = Solve_(obj)
+        % -----------------------------------------------------------------
+        % Arguments
+        %   assignee = variable name to be solved for as a string
+        %   equations = string array of equations, which are themselves
+        %       strings
+        %   required_var_sets = cell array of cell arrays; the inner cell
+        %       arrays are sets of variable names that are part of one
+        %       equation
+        % -----------------------------------------------------------------
+        % Comments
+        %   1) Elements of arguments should match up with those of
+        %       equations and required_var_sets, i.e. equations(1) should
+        %       match up with required_var_sets{1}, where
+        %       equations(1) returns a string, and required_var_sets{1}
+        %       returns a cell array that is a set of the variable names
+        %       in equations(1)
+        %   2) Ultimately, the property of obj with the name matching the
+        %       string assignee will be assigned the value resulting from
+        %       evaluating the string returned by equations(1) if all of
+        %       the variables named by elements in the cell array returned
+        %       by required_var_sets{1} are known (or *solveable* - coming
+        %       soon!)
+        function obj = Solve(obj, assignee, equations, required_var_sets)
             %% List equations and their variable sets
-            % 
-            equation_1 = "";
-            required_vars_1 = {""};
 
             % For iterating through all variables
-            var_sets = {required_vars_1, required_vars_2};
-            num_var_sets = length(var_sets);
+            num_equations = length(required_var_sets);
             
             %% Initialize required variable references
-            for i_var_set = 1:num_var_sets
-                var_set = var_sets{i_var_set};
+            for i_equation = 1:num_equations
+                var_set = required_var_sets{i_equation};
                 num_vars = length(var_set);
                 for i_var = 1:num_vars
                     var_name = var_set{i_var};
@@ -1935,23 +1953,24 @@ classdef Aircraft
             end
 
             %% Checks if any equations can be solved
-            for i_var_set = 1:num_var_sets
-                var_set = var_sets{i_var_set};
-                equation = append("equation_", string(i_var_set));
+            for i_equation = 1:num_equations
+                var_set = required_var_sets{i_equation};
+                equation = equations(i_equation);
 
+                % Later possibly add in solveability checker recursion here
                 if ~any(cellfun(@(name) isempty(obj.(name)), var_set))
             
-                    obj.C_L = eval(equation);
+                    obj.(assignee) = eval(equation);
                     return;
                 end
             end
         
             %% Prints out unknown required variables preventing the solve
             warning("Solve_: insufficient known variables to " + ...
-                "solve for ");
+                "solve for %s", assignee);
             fprintf("Unknown variables:\n")
-            for i_var_set = 1:num_var_sets
-                var_set = var_sets{i_var_set};
+            for i_equation = 1:num_equations
+                var_set = required_var_sets{i_equation};
                 num_vars = length(var_set);
 
                 for i_var = 1:num_vars
@@ -1966,7 +1985,7 @@ classdef Aircraft
                 %   var_set, print "or" to denote the end of a grouped set
                 %   of required variables
                 if i_var == num_vars
-                    if i_var_set ~= num_var_sets
+                    if i_equation ~= num_equations
                         fprintf("--------or--------\n");
                     else
                         fprintf("------------------\n");
@@ -1979,7 +1998,7 @@ classdef Aircraft
     end
 
     methods (Static, Access = private)
-        
+
         % Checks input validity for scalar, real, numerical variables
         function val = CheckInput(var_name, val)
             if class(val) == "double"
