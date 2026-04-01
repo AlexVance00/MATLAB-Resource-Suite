@@ -242,12 +242,44 @@ classdef Aircraft
                 args.?Aircraft
             end
             arg_names = fieldnames(args);
+            num_args = length(arg_names);
             
-            if ismember("units", arg_names)
-                if args.units ~= "m-kg" && args.units ~= "ft-slugs"
-                    error(sprintf("Invalid input for 'units' " + ...
-                        "argument\nValid inputs are <'m-kg', " + ...
-                        "'ft-slugs'>\nDefault is 'ft-slugs'"));
+            % Input checking
+            for i_arg = 1:num_args
+                arg_name = arg_names{i_arg};
+                arg_val = args.(arg_name);
+
+                if arg_name ~= "units"
+                    if class(arg_val) == "double"
+                        if isreal(arg_val)
+                            if isscalar(arg_val)
+                                continue;
+                            else
+                                warning("Could not initialize " + ...
+                                    "variable ""%s""\nArgument must " + ...
+                                    "be scalar:", arg_name);
+                                disp(arg_val);
+                                args.(arg_name) = [];
+                            end
+                        else
+                            warning("Could not initialize variable " + ...
+                                """%s""\nArgument ""%.4f"" must be" + ...
+                                "real", arg_name, arg_val);
+                                args.(arg_name) = [];
+                        end
+                    else
+                        warning("Could not initialize variable " + ...
+                            """%s""\nArgument ""%s"" must be " + ...
+                            "class ""double""", arg_name, arg_val);
+                                args.(arg_name) = [];
+                    end
+                else
+                    if arg_val ~= "m-kg" && arg_val ~= "ft-slugs"
+                        warning(sprintf("Invalid input for 'units' " + ...
+                            "argument\nValid inputs are <'m-kg', " + ...
+                            "'ft-slugs'>\nDefault is 'ft-slugs'"));
+                        args.units = "ft-slugs";
+                    end
                 end
             end
 

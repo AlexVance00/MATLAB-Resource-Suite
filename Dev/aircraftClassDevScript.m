@@ -71,3 +71,7 @@ if bool_make_setters
     delete(filename_setters)
     writelines(functions, filename_setters);
 end
+
+%% Test area
+aircraft = Aircraft(a_t = [1, 2]);
+aircraft.Get_a_t
