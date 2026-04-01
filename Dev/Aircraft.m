@@ -24,9 +24,11 @@ classdef Aircraft
         % <"m-kg", "ft-slugs">
         units = "ft-slugs";
 
-        %% Aircraft
+        %% Values
+        %%  Aircraft
         % Coefficients
-        C_L = [];
+        C_L = struct("value", [], "equations", ["C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e;"; ...
+            "L / (q_bar_w * S_w);"]);
         C_L_0 = [];
         C_L_alpha = [];
         C_L_delta_e = [];
@@ -1851,62 +1853,6 @@ classdef Aircraft
             % C_L = L / (q_bar_w * S_w)
             equation_2 = "L / (q_bar_w * S_w);";
             required_vars_2 = {"L", "q_bar_w", "S_w"};
-
-            % For iterating through all variables
-            var_sets = {required_vars_1, required_vars_2};
-            num_var_sets = length(var_sets);
-            
-            %% Initialize required variable references
-            for i_var_set = 1:num_var_sets
-                var_set = var_sets{i_var_set};
-                num_vars = length(var_set);
-                for i_var = 1:num_vars
-                    var_name = var_set{i_var};
-                    var = obj.(var_name);
-
-                    eval(append(var_name, " = var;"));
-                end
-            end
-
-            %% Checks if any equations can be solved
-            for i_var_set = 1:num_var_sets
-                var_set = var_sets{i_var_set};
-                equation = append("equation_", string(i_var_set));
-
-                if ~any(cellfun(@(name) isempty(obj.(name)), var_set))
-            
-                    obj.C_L = eval(equation);
-                    return;
-                end
-            end
-        
-            %% Prints out unknown required variables preventing the solve
-            warning("Solve_C_L: insufficient known variables to " + ...
-                "solve for C_L");
-            fprintf("Unknown variables:\n")
-            for i_var_set = 1:num_var_sets
-                var_set = var_sets{i_var_set};
-                num_vars = length(var_set);
-
-                for i_var = 1:num_vars
-                    var_name = var_set{i_var};
-                    var = eval(var_name);
-                    if isempty(var)
-                        fprintf("%s\n", var_name);
-                    end
-                end
-
-                % If at the *end* of a var_set but not in the *last*
-                %   var_set, print "or" to denote the end of a grouped set
-                %   of required variables
-                if i_var == num_vars
-                    if i_var_set ~= num_var_sets
-                        fprintf("--------or--------\n");
-                    else
-                        fprintf("------------------\n");
-                    end
-                end
-            end
 
             return;
         end

@@ -63,5 +63,20 @@ if bool_make_setters
 end
 
 %% Test area
-aircraft = Aircraft(a_t = [1, 2]);
-aircraft.Get_a_t
+% aircraft = Aircraft(a_t = [1, 2]);
+% aircraft.Get_a_t;
+
+equation = ["C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e;"];
+required_vars_control = {"C_L_0", "C_L_alpha", "alpha_w", "C_L_i_t", "i_t", "C_L_delta_e", "delta_e"};
+
+required_vars_test = GetRequired_Vars(equation)
+
+function required_vars = GetRequired_Vars(equations)
+    
+    num_equations = length(equations);
+    for i_equation = 1:num_equations
+        disp(num_equations)
+    end
+    required_vars = 1;
+    return;
+end
