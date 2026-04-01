@@ -250,29 +250,7 @@ classdef Aircraft
                 arg_val = args.(arg_name);
 
                 if arg_name ~= "units"
-                    if class(arg_val) == "double"
-                        if isreal(arg_val)
-                            if isscalar(arg_val)
-                                continue;
-                            else
-                                warning("Could not initialize " + ...
-                                    "variable ""%s""\nArgument must " + ...
-                                    "be scalar:", arg_name);
-                                disp(arg_val);
-                                args.(arg_name) = [];
-                            end
-                        else
-                            warning("Could not initialize variable " + ...
-                                """%s""\nArgument ""%.4f"" must be" + ...
-                                "real", arg_name, arg_val);
-                                args.(arg_name) = [];
-                        end
-                    else
-                        warning("Could not initialize variable " + ...
-                            """%s""\nArgument ""%s"" must be " + ...
-                            "class ""double""", arg_name, arg_val);
-                                args.(arg_name) = [];
-                    end
+                    arg_val = Aircraft.CheckInput(arg_name, arg_val);
                 else
                     if arg_val ~= "m-kg" && arg_val ~= "ft-slugs"
                         warning(sprintf("Invalid input for 'units' " + ...
@@ -1075,1562 +1053,784 @@ classdef Aircraft
 
         %% Setters
 		function obj = Set_units(obj, val)
-			if class(val) == "double"
-				obj.units = val;
-			else
-				warning("Could not set units to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.units = Aircraft.CheckInput("units", val);
 			return;
 		end
 
 		function obj = Set_C_L(obj, val)
-			if class(val) == "double"
-				obj.C_L = val;
-			else
-				warning("Could not set C_L to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L = Aircraft.CheckInput("C_L", val);
 			return;
 		end
 
 		function obj = Set_C_L_0(obj, val)
-			if class(val) == "double"
-				obj.C_L_0 = val;
-			else
-				warning("Could not set C_L_0 to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_0 = Aircraft.CheckInput("C_L_0", val);
 			return;
 		end
 
 		function obj = Set_C_L_alpha(obj, val)
-			if class(val) == "double"
-				obj.C_L_alpha = val;
-			else
-				warning("Could not set C_L_alpha to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_alpha = Aircraft.CheckInput("C_L_alpha", val);
 			return;
 		end
 
 		function obj = Set_C_L_delta_e(obj, val)
-			if class(val) == "double"
-				obj.C_L_delta_e = val;
-			else
-				warning("Could not set C_L_delta_e to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_delta_e = Aircraft.CheckInput("C_L_delta_e", val);
 			return;
 		end
 
 		function obj = Set_C_L_q(obj, val)
-			if class(val) == "double"
-				obj.C_L_q = val;
-			else
-				warning("Could not set C_L_q to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_q = Aircraft.CheckInput("C_L_q", val);
 			return;
 		end
 
 		function obj = Set_C_L_0_prime(obj, val)
-			if class(val) == "double"
-				obj.C_L_0_prime = val;
-			else
-				warning("Could not set C_L_0_prime to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_0_prime = Aircraft.CheckInput("C_L_0_prime", val);
 			return;
 		end
 
 		function obj = Set_C_M(obj, val)
-			if class(val) == "double"
-				obj.C_M = val;
-			else
-				warning("Could not set C_M to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M = Aircraft.CheckInput("C_M", val);
 			return;
 		end
 
 		function obj = Set_C_M_0(obj, val)
-			if class(val) == "double"
-				obj.C_M_0 = val;
-			else
-				warning("Could not set C_M_0 to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_0 = Aircraft.CheckInput("C_M_0", val);
 			return;
 		end
 
 		function obj = Set_C_M_alpha(obj, val)
-			if class(val) == "double"
-				obj.C_M_alpha = val;
-			else
-				warning("Could not set C_M_alpha to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_alpha = Aircraft.CheckInput("C_M_alpha", val);
 			return;
 		end
 
 		function obj = Set_C_M_delta_e(obj, val)
-			if class(val) == "double"
-				obj.C_M_delta_e = val;
-			else
-				warning("Could not set C_M_delta_e to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_delta_e = Aircraft.CheckInput("C_M_delta_e", val);
 			return;
 		end
 
 		function obj = Set_C_M_q(obj, val)
-			if class(val) == "double"
-				obj.C_M_q = val;
-			else
-				warning("Could not set C_M_q to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_q = Aircraft.CheckInput("C_M_q", val);
 			return;
 		end
 
 		function obj = Set_C_M_0_prime(obj, val)
-			if class(val) == "double"
-				obj.C_M_0_prime = val;
-			else
-				warning("Could not set C_M_0_prime to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_0_prime = Aircraft.CheckInput("C_M_0_prime", val);
 			return;
 		end
 
 		function obj = Set_C_M_0_p(obj, val)
-			if class(val) == "double"
-				obj.C_M_0_p = val;
-			else
-				warning("Could not set C_M_0_p to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_0_p = Aircraft.CheckInput("C_M_0_p", val);
 			return;
 		end
 
 		function obj = Set_C_M_0_f(obj, val)
-			if class(val) == "double"
-				obj.C_M_0_f = val;
-			else
-				warning("Could not set C_M_0_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_0_f = Aircraft.CheckInput("C_M_0_f", val);
 			return;
 		end
 
 		function obj = Set_C_M_alpha_p(obj, val)
-			if class(val) == "double"
-				obj.C_M_alpha_p = val;
-			else
-				warning("Could not set C_M_alpha_p to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_alpha_p = Aircraft.CheckInput("C_M_alpha_p", val);
 			return;
 		end
 
 		function obj = Set_C_M_alpha_f(obj, val)
-			if class(val) == "double"
-				obj.C_M_alpha_f = val;
-			else
-				warning("Could not set C_M_alpha_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_alpha_f = Aircraft.CheckInput("C_M_alpha_f", val);
 			return;
 		end
 
 		function obj = Set_C_y(obj, val)
-			if class(val) == "double"
-				obj.C_y = val;
-			else
-				warning("Could not set C_y to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_y = Aircraft.CheckInput("C_y", val);
 			return;
 		end
 
 		function obj = Set_C_y_beta(obj, val)
-			if class(val) == "double"
-				obj.C_y_beta = val;
-			else
-				warning("Could not set C_y_beta to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_y_beta = Aircraft.CheckInput("C_y_beta", val);
 			return;
 		end
 
 		function obj = Set_C_y_delta_r(obj, val)
-			if class(val) == "double"
-				obj.C_y_delta_r = val;
-			else
-				warning("Could not set C_y_delta_r to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_y_delta_r = Aircraft.CheckInput("C_y_delta_r", val);
 			return;
 		end
 
 		function obj = Set_C_y_r(obj, val)
-			if class(val) == "double"
-				obj.C_y_r = val;
-			else
-				warning("Could not set C_y_r to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_y_r = Aircraft.CheckInput("C_y_r", val);
 			return;
 		end
 
 		function obj = Set_C_n(obj, val)
-			if class(val) == "double"
-				obj.C_n = val;
-			else
-				warning("Could not set C_n to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_n = Aircraft.CheckInput("C_n", val);
 			return;
 		end
 
 		function obj = Set_C_n_beta(obj, val)
-			if class(val) == "double"
-				obj.C_n_beta = val;
-			else
-				warning("Could not set C_n_beta to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_n_beta = Aircraft.CheckInput("C_n_beta", val);
 			return;
 		end
 
 		function obj = Set_C_n_delta_r(obj, val)
-			if class(val) == "double"
-				obj.C_n_delta_r = val;
-			else
-				warning("Could not set C_n_delta_r to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_n_delta_r = Aircraft.CheckInput("C_n_delta_r", val);
 			return;
 		end
 
 		function obj = Set_C_n_delta_a(obj, val)
-			if class(val) == "double"
-				obj.C_n_delta_a = val;
-			else
-				warning("Could not set C_n_delta_a to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_n_delta_a = Aircraft.CheckInput("C_n_delta_a", val);
 			return;
 		end
 
 		function obj = Set_C_n_r(obj, val)
-			if class(val) == "double"
-				obj.C_n_r = val;
-			else
-				warning("Could not set C_n_r to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_n_r = Aircraft.CheckInput("C_n_r", val);
 			return;
 		end
 
 		function obj = Set_C_n_sigma(obj, val)
-			if class(val) == "double"
-				obj.C_n_sigma = val;
-			else
-				warning("Could not set C_n_sigma to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_n_sigma = Aircraft.CheckInput("C_n_sigma", val);
 			return;
 		end
 
 		function obj = Set_C_l(obj, val)
-			if class(val) == "double"
-				obj.C_l = val;
-			else
-				warning("Could not set C_l to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l = Aircraft.CheckInput("C_l", val);
 			return;
 		end
 
 		function obj = Set_C_l_beta_w(obj, val)
-			if class(val) == "double"
-				obj.C_l_beta_w = val;
-			else
-				warning("Could not set C_l_beta_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_beta_w = Aircraft.CheckInput("C_l_beta_w", val);
 			return;
 		end
 
 		function obj = Set_C_l_beta_f(obj, val)
-			if class(val) == "double"
-				obj.C_l_beta_f = val;
-			else
-				warning("Could not set C_l_beta_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_beta_f = Aircraft.CheckInput("C_l_beta_f", val);
 			return;
 		end
 
 		function obj = Set_C_l_beta_d(obj, val)
-			if class(val) == "double"
-				obj.C_l_beta_d = val;
-			else
-				warning("Could not set C_l_beta_d to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_beta_d = Aircraft.CheckInput("C_l_beta_d", val);
 			return;
 		end
 
 		function obj = Set_C_l_beta_s(obj, val)
-			if class(val) == "double"
-				obj.C_l_beta_s = val;
-			else
-				warning("Could not set C_l_beta_s to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_beta_s = Aircraft.CheckInput("C_l_beta_s", val);
 			return;
 		end
 
 		function obj = Set_C_l_delta_r(obj, val)
-			if class(val) == "double"
-				obj.C_l_delta_r = val;
-			else
-				warning("Could not set C_l_delta_r to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_delta_r = Aircraft.CheckInput("C_l_delta_r", val);
 			return;
 		end
 
 		function obj = Set_C_l_delta_a(obj, val)
-			if class(val) == "double"
-				obj.C_l_delta_a = val;
-			else
-				warning("Could not set C_l_delta_a to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_delta_a = Aircraft.CheckInput("C_l_delta_a", val);
 			return;
 		end
 
 		function obj = Set_C_l_r(obj, val)
-			if class(val) == "double"
-				obj.C_l_r = val;
-			else
-				warning("Could not set C_l_r to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_r = Aircraft.CheckInput("C_l_r", val);
 			return;
 		end
 
 		function obj = Set_C_l_p(obj, val)
-			if class(val) == "double"
-				obj.C_l_p = val;
-			else
-				warning("Could not set C_l_p to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_l_p = Aircraft.CheckInput("C_l_p", val);
 			return;
 		end
 
 		function obj = Set_eta(obj, val)
-			if class(val) == "double"
-				obj.eta = val;
-			else
-				warning("Could not set eta to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.eta = Aircraft.CheckInput("eta", val);
 			return;
 		end
 
 		function obj = Set_eta_1(obj, val)
-			if class(val) == "double"
-				obj.eta_1 = val;
-			else
-				warning("Could not set eta_1 to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.eta_1 = Aircraft.CheckInput("eta_1", val);
 			return;
 		end
 
 		function obj = Set_eta_2(obj, val)
-			if class(val) == "double"
-				obj.eta_2 = val;
-			else
-				warning("Could not set eta_2 to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.eta_2 = Aircraft.CheckInput("eta_2", val);
 			return;
 		end
 
 		function obj = Set_C_w(obj, val)
-			if class(val) == "double"
-				obj.C_w = val;
-			else
-				warning("Could not set C_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_w = Aircraft.CheckInput("C_w", val);
 			return;
 		end
 
 		function obj = Set_n(obj, val)
-			if class(val) == "double"
-				obj.n = val;
-			else
-				warning("Could not set n to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.n = Aircraft.CheckInput("n", val);
 			return;
 		end
 
 		function obj = Set_mu(obj, val)
-			if class(val) == "double"
-				obj.mu = val;
-			else
-				warning("Could not set mu to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.mu = Aircraft.CheckInput("mu", val);
 			return;
 		end
 
 		function obj = Set_nu(obj, val)
-			if class(val) == "double"
-				obj.nu = val;
-			else
-				warning("Could not set nu to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.nu = Aircraft.CheckInput("nu", val);
 			return;
 		end
 
 		function obj = Set_beta(obj, val)
-			if class(val) == "double"
-				obj.beta = val;
-			else
-				warning("Could not set beta to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.beta = Aircraft.CheckInput("beta", val);
 			return;
 		end
 
 		function obj = Set_sigma_beta(obj, val)
-			if class(val) == "double"
-				obj.sigma_beta = val;
-			else
-				warning("Could not set sigma_beta to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.sigma_beta = Aircraft.CheckInput("sigma_beta", val);
 			return;
 		end
 
 		function obj = Set_sigma_0(obj, val)
-			if class(val) == "double"
-				obj.sigma_0 = val;
-			else
-				warning("Could not set sigma_0 to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.sigma_0 = Aircraft.CheckInput("sigma_0", val);
 			return;
 		end
 
 		function obj = Set_phi(obj, val)
-			if class(val) == "double"
-				obj.phi = val;
-			else
-				warning("Could not set phi to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.phi = Aircraft.CheckInput("phi", val);
 			return;
 		end
 
 		function obj = Set_theta(obj, val)
-			if class(val) == "double"
-				obj.theta = val;
-			else
-				warning("Could not set theta to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.theta = Aircraft.CheckInput("theta", val);
 			return;
 		end
 
 		function obj = Set_psi(obj, val)
-			if class(val) == "double"
-				obj.psi = val;
-			else
-				warning("Could not set psi to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.psi = Aircraft.CheckInput("psi", val);
 			return;
 		end
 
 		function obj = Set_delta_a(obj, val)
-			if class(val) == "double"
-				obj.delta_a = val;
-			else
-				warning("Could not set delta_a to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.delta_a = Aircraft.CheckInput("delta_a", val);
 			return;
 		end
 
 		function obj = Set_delta_e(obj, val)
-			if class(val) == "double"
-				obj.delta_e = val;
-			else
-				warning("Could not set delta_e to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.delta_e = Aircraft.CheckInput("delta_e", val);
 			return;
 		end
 
 		function obj = Set_delta_r(obj, val)
-			if class(val) == "double"
-				obj.delta_r = val;
-			else
-				warning("Could not set delta_r to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.delta_r = Aircraft.CheckInput("delta_r", val);
 			return;
 		end
 
 		function obj = Set_p_i(obj, val)
-			if class(val) == "double"
-				obj.p_i = val;
-			else
-				warning("Could not set p_i to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.p_i = Aircraft.CheckInput("p_i", val);
 			return;
 		end
 
 		function obj = Set_q_i(obj, val)
-			if class(val) == "double"
-				obj.q_i = val;
-			else
-				warning("Could not set q_i to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.q_i = Aircraft.CheckInput("q_i", val);
 			return;
 		end
 
 		function obj = Set_r_i(obj, val)
-			if class(val) == "double"
-				obj.r_i = val;
-			else
-				warning("Could not set r_i to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.r_i = Aircraft.CheckInput("r_i", val);
 			return;
 		end
 
 		function obj = Set_p_i_dot(obj, val)
-			if class(val) == "double"
-				obj.p_i_dot = val;
-			else
-				warning("Could not set p_i_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.p_i_dot = Aircraft.CheckInput("p_i_dot", val);
 			return;
 		end
 
 		function obj = Set_q_i_dot(obj, val)
-			if class(val) == "double"
-				obj.q_i_dot = val;
-			else
-				warning("Could not set q_i_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.q_i_dot = Aircraft.CheckInput("q_i_dot", val);
 			return;
 		end
 
 		function obj = Set_r_i_dot(obj, val)
-			if class(val) == "double"
-				obj.r_i_dot = val;
-			else
-				warning("Could not set r_i_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.r_i_dot = Aircraft.CheckInput("r_i_dot", val);
 			return;
 		end
 
 		function obj = Set_p_b(obj, val)
-			if class(val) == "double"
-				obj.p_b = val;
-			else
-				warning("Could not set p_b to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.p_b = Aircraft.CheckInput("p_b", val);
 			return;
 		end
 
 		function obj = Set_q_b(obj, val)
-			if class(val) == "double"
-				obj.q_b = val;
-			else
-				warning("Could not set q_b to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.q_b = Aircraft.CheckInput("q_b", val);
 			return;
 		end
 
 		function obj = Set_r_b(obj, val)
-			if class(val) == "double"
-				obj.r_b = val;
-			else
-				warning("Could not set r_b to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.r_b = Aircraft.CheckInput("r_b", val);
 			return;
 		end
 
 		function obj = Set_p_b_dot(obj, val)
-			if class(val) == "double"
-				obj.p_b_dot = val;
-			else
-				warning("Could not set p_b_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.p_b_dot = Aircraft.CheckInput("p_b_dot", val);
 			return;
 		end
 
 		function obj = Set_q_b_dot(obj, val)
-			if class(val) == "double"
-				obj.q_b_dot = val;
-			else
-				warning("Could not set q_b_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.q_b_dot = Aircraft.CheckInput("q_b_dot", val);
 			return;
 		end
 
 		function obj = Set_r_b_dot(obj, val)
-			if class(val) == "double"
-				obj.r_b_dot = val;
-			else
-				warning("Could not set r_b_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.r_b_dot = Aircraft.CheckInput("r_b_dot", val);
 			return;
 		end
 
 		function obj = Set_u(obj, val)
-			if class(val) == "double"
-				obj.u = val;
-			else
-				warning("Could not set u to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.u = Aircraft.CheckInput("u", val);
 			return;
 		end
 
 		function obj = Set_v(obj, val)
-			if class(val) == "double"
-				obj.v = val;
-			else
-				warning("Could not set v to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.v = Aircraft.CheckInput("v", val);
 			return;
 		end
 
 		function obj = Set_w(obj, val)
-			if class(val) == "double"
-				obj.w = val;
-			else
-				warning("Could not set w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.w = Aircraft.CheckInput("w", val);
 			return;
 		end
 
 		function obj = Set_u_dot(obj, val)
-			if class(val) == "double"
-				obj.u_dot = val;
-			else
-				warning("Could not set u_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.u_dot = Aircraft.CheckInput("u_dot", val);
 			return;
 		end
 
 		function obj = Set_v_dot(obj, val)
-			if class(val) == "double"
-				obj.v_dot = val;
-			else
-				warning("Could not set v_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.v_dot = Aircraft.CheckInput("v_dot", val);
 			return;
 		end
 
 		function obj = Set_w_dot(obj, val)
-			if class(val) == "double"
-				obj.w_dot = val;
-			else
-				warning("Could not set w_dot to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.w_dot = Aircraft.CheckInput("w_dot", val);
 			return;
 		end
 
 		function obj = Set_W(obj, val)
-			if class(val) == "double"
-				obj.W = val;
-			else
-				warning("Could not set W to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.W = Aircraft.CheckInput("W", val);
 			return;
 		end
 
 		function obj = Set_m(obj, val)
-			if class(val) == "double"
-				obj.m = val;
-			else
-				warning("Could not set m to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.m = Aircraft.CheckInput("m", val);
 			return;
 		end
 
 		function obj = Set_I_xx(obj, val)
-			if class(val) == "double"
-				obj.I_xx = val;
-			else
-				warning("Could not set I_xx to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.I_xx = Aircraft.CheckInput("I_xx", val);
 			return;
 		end
 
 		function obj = Set_I_yy(obj, val)
-			if class(val) == "double"
-				obj.I_yy = val;
-			else
-				warning("Could not set I_yy to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.I_yy = Aircraft.CheckInput("I_yy", val);
 			return;
 		end
 
 		function obj = Set_I_zz(obj, val)
-			if class(val) == "double"
-				obj.I_zz = val;
-			else
-				warning("Could not set I_zz to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.I_zz = Aircraft.CheckInput("I_zz", val);
 			return;
 		end
 
 		function obj = Set_I_xy(obj, val)
-			if class(val) == "double"
-				obj.I_xy = val;
-			else
-				warning("Could not set I_xy to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.I_xy = Aircraft.CheckInput("I_xy", val);
 			return;
 		end
 
 		function obj = Set_I_xz(obj, val)
-			if class(val) == "double"
-				obj.I_xz = val;
-			else
-				warning("Could not set I_xz to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.I_xz = Aircraft.CheckInput("I_xz", val);
 			return;
 		end
 
 		function obj = Set_I_yz(obj, val)
-			if class(val) == "double"
-				obj.I_yz = val;
-			else
-				warning("Could not set I_yz to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.I_yz = Aircraft.CheckInput("I_yz", val);
 			return;
 		end
 
 		function obj = Set_sum_F(obj, val)
-			if class(val) == "double"
-				obj.sum_F = val;
-			else
-				warning("Could not set sum_F to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.sum_F = Aircraft.CheckInput("sum_F", val);
 			return;
 		end
 
 		function obj = Set_L(obj, val)
-			if class(val) == "double"
-				obj.L = val;
-			else
-				warning("Could not set L to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.L = Aircraft.CheckInput("L", val);
 			return;
 		end
 
 		function obj = Set_D(obj, val)
-			if class(val) == "double"
-				obj.D = val;
-			else
-				warning("Could not set D to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.D = Aircraft.CheckInput("D", val);
 			return;
 		end
 
 		function obj = Set_T(obj, val)
-			if class(val) == "double"
-				obj.T = val;
-			else
-				warning("Could not set T to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.T = Aircraft.CheckInput("T", val);
 			return;
 		end
 
 		function obj = Set_sum_M(obj, val)
-			if class(val) == "double"
-				obj.sum_M = val;
-			else
-				warning("Could not set sum_M to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.sum_M = Aircraft.CheckInput("sum_M", val);
 			return;
 		end
 
 		function obj = Set_M(obj, val)
-			if class(val) == "double"
-				obj.M = val;
-			else
-				warning("Could not set M to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.M = Aircraft.CheckInput("M", val);
 			return;
 		end
 
 		function obj = Set_N_T(obj, val)
-			if class(val) == "double"
-				obj.N_T = val;
-			else
-				warning("Could not set N_T to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.N_T = Aircraft.CheckInput("N_T", val);
 			return;
 		end
 
 		function obj = Set_rho(obj, val)
-			if class(val) == "double"
-				obj.rho = val;
-			else
-				warning("Could not set rho to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.rho = Aircraft.CheckInput("rho", val);
 			return;
 		end
 
 		function obj = Set_g(obj, val)
-			if class(val) == "double"
-				obj.g = val;
-			else
-				warning("Could not set g to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.g = Aircraft.CheckInput("g", val);
 			return;
 		end
 
 		function obj = Set_x_cg(obj, val)
-			if class(val) == "double"
-				obj.x_cg = val;
-			else
-				warning("Could not set x_cg to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_cg = Aircraft.CheckInput("x_cg", val);
 			return;
 		end
 
 		function obj = Set_x_bar_cg(obj, val)
-			if class(val) == "double"
-				obj.x_bar_cg = val;
-			else
-				warning("Could not set x_bar_cg to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_bar_cg = Aircraft.CheckInput("x_bar_cg", val);
 			return;
 		end
 
 		function obj = Set_x_ac(obj, val)
-			if class(val) == "double"
-				obj.x_ac = val;
-			else
-				warning("Could not set x_ac to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_ac = Aircraft.CheckInput("x_ac", val);
 			return;
 		end
 
 		function obj = Set_x_bar_ac(obj, val)
-			if class(val) == "double"
-				obj.x_bar_ac = val;
-			else
-				warning("Could not set x_bar_ac to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_bar_ac = Aircraft.CheckInput("x_bar_ac", val);
 			return;
 		end
 
 		function obj = Set_z_cg(obj, val)
-			if class(val) == "double"
-				obj.z_cg = val;
-			else
-				warning("Could not set z_cg to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.z_cg = Aircraft.CheckInput("z_cg", val);
 			return;
 		end
 
 		function obj = Set_SM(obj, val)
-			if class(val) == "double"
-				obj.SM = val;
-			else
-				warning("Could not set SM to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.SM = Aircraft.CheckInput("SM", val);
 			return;
 		end
 
 		function obj = Set_C_L_0_w(obj, val)
-			if class(val) == "double"
-				obj.C_L_0_w = val;
-			else
-				warning("Could not set C_L_0_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_0_w = Aircraft.CheckInput("C_L_0_w", val);
 			return;
 		end
 
 		function obj = Set_C_L_alpha_w(obj, val)
-			if class(val) == "double"
-				obj.C_L_alpha_w = val;
-			else
-				warning("Could not set C_L_alpha_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_alpha_w = Aircraft.CheckInput("C_L_alpha_w", val);
 			return;
 		end
 
 		function obj = Set_c_l_0_w(obj, val)
-			if class(val) == "double"
-				obj.c_l_0_w = val;
-			else
-				warning("Could not set c_l_0_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_l_0_w = Aircraft.CheckInput("c_l_0_w", val);
 			return;
 		end
 
 		function obj = Set_c_l_alpha_w(obj, val)
-			if class(val) == "double"
-				obj.c_l_alpha_w = val;
-			else
-				warning("Could not set c_l_alpha_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_l_alpha_w = Aircraft.CheckInput("c_l_alpha_w", val);
 			return;
 		end
 
 		function obj = Set_c_m_ac_w(obj, val)
-			if class(val) == "double"
-				obj.c_m_ac_w = val;
-			else
-				warning("Could not set c_m_ac_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_m_ac_w = Aircraft.CheckInput("c_m_ac_w", val);
 			return;
 		end
 
 		function obj = Set_a_w(obj, val)
-			if class(val) == "double"
-				obj.a_w = val;
-			else
-				warning("Could not set a_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.a_w = Aircraft.CheckInput("a_w", val);
 			return;
 		end
 
 		function obj = Set_AR_w(obj, val)
-			if class(val) == "double"
-				obj.AR_w = val;
-			else
-				warning("Could not set AR_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.AR_w = Aircraft.CheckInput("AR_w", val);
 			return;
 		end
 
 		function obj = Set_lambda_w(obj, val)
-			if class(val) == "double"
-				obj.lambda_w = val;
-			else
-				warning("Could not set lambda_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.lambda_w = Aircraft.CheckInput("lambda_w", val);
 			return;
 		end
 
 		function obj = Set_sweep_w(obj, val)
-			if class(val) == "double"
-				obj.sweep_w = val;
-			else
-				warning("Could not set sweep_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.sweep_w = Aircraft.CheckInput("sweep_w", val);
 			return;
 		end
 
 		function obj = Set_gamma_w(obj, val)
-			if class(val) == "double"
-				obj.gamma_w = val;
-			else
-				warning("Could not set gamma_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.gamma_w = Aircraft.CheckInput("gamma_w", val);
 			return;
 		end
 
 		function obj = Set_i_w(obj, val)
-			if class(val) == "double"
-				obj.i_w = val;
-			else
-				warning("Could not set i_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.i_w = Aircraft.CheckInput("i_w", val);
 			return;
 		end
 
 		function obj = Set_alpha_w(obj, val)
-			if class(val) == "double"
-				obj.alpha_w = val;
-			else
-				warning("Could not set alpha_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.alpha_w = Aircraft.CheckInput("alpha_w", val);
 			return;
 		end
 
 		function obj = Set_alpha_L_0_w(obj, val)
-			if class(val) == "double"
-				obj.alpha_L_0_w = val;
-			else
-				warning("Could not set alpha_L_0_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.alpha_L_0_w = Aircraft.CheckInput("alpha_L_0_w", val);
 			return;
 		end
 
 		function obj = Set_alpha_w_trim(obj, val)
-			if class(val) == "double"
-				obj.alpha_w_trim = val;
-			else
-				warning("Could not set alpha_w_trim to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.alpha_w_trim = Aircraft.CheckInput("alpha_w_trim", val);
 			return;
 		end
 
 		function obj = Set_alpha_w_trim_delta_e_0(obj, val)
-			if class(val) == "double"
-				obj.alpha_w_trim_delta_e_0 = val;
-			else
-				warning("Could not set alpha_w_trim_delta_e_0 to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.alpha_w_trim_delta_e_0 = ...
+                Aircraft.CheckInput("alpha_w_trim_delta_e_0", val);
 			return;
 		end
 
 		function obj = Set_q_bar_w(obj, val)
-			if class(val) == "double"
-				obj.q_bar_w = val;
-			else
-				warning("Could not set q_bar_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.q_bar_w = Aircraft.CheckInput("q_bar_w", val);
 			return;
 		end
 
 		function obj = Set_S_w(obj, val)
-			if class(val) == "double"
-				obj.S_w = val;
-			else
-				warning("Could not set S_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.S_w = Aircraft.CheckInput("S_w", val);
 			return;
 		end
 
 		function obj = Set_b_w(obj, val)
-			if class(val) == "double"
-				obj.b_w = val;
-			else
-				warning("Could not set b_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.b_w = Aircraft.CheckInput("b_w", val);
 			return;
 		end
 
 		function obj = Set_c_bar_w(obj, val)
-			if class(val) == "double"
-				obj.c_bar_w = val;
-			else
-				warning("Could not set c_bar_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_bar_w = Aircraft.CheckInput("c_bar_w", val);
 			return;
 		end
 
 		function obj = Set_c_r_w(obj, val)
-			if class(val) == "double"
-				obj.c_r_w = val;
-			else
-				warning("Could not set c_r_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_r_w = Aircraft.CheckInput("c_r_w", val);
 			return;
 		end
 
 		function obj = Set_c_t_w(obj, val)
-			if class(val) == "double"
-				obj.c_t_w = val;
-			else
-				warning("Could not set c_t_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_t_w = Aircraft.CheckInput("c_t_w", val);
 			return;
 		end
 
 		function obj = Set_c_w(obj, val)
-			if class(val) == "double"
-				obj.c_w = val;
-			else
-				warning("Could not set c_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_w = Aircraft.CheckInput("c_w", val);
 			return;
 		end
 
 		function obj = Set_x_ac_w(obj, val)
-			if class(val) == "double"
-				obj.x_ac_w = val;
-			else
-				warning("Could not set x_ac_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_ac_w = Aircraft.CheckInput("x_ac_w", val);
 			return;
 		end
 
 		function obj = Set_x_bar_ac_w(obj, val)
-			if class(val) == "double"
-				obj.x_bar_ac_w = val;
-			else
-				warning("Could not set x_bar_ac_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_bar_ac_w = Aircraft.CheckInput("x_bar_ac_w", val);
 			return;
 		end
 
 		function obj = Set_y_ac_w(obj, val)
-			if class(val) == "double"
-				obj.y_ac_w = val;
-			else
-				warning("Could not set y_ac_w to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.y_ac_w = Aircraft.CheckInput("y_ac_w", val);
 			return;
 		end
 
 		function obj = Set_C_L_0_t(obj, val)
-			if class(val) == "double"
-				obj.C_L_0_t = val;
-			else
-				warning("Could not set C_L_0_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_0_t = Aircraft.CheckInput("C_L_0_t", val);
 			return;
 		end
 
 		function obj = Set_C_L_alpha_t(obj, val)
-			if class(val) == "double"
-				obj.C_L_alpha_t = val;
-			else
-				warning("Could not set C_L_alpha_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_alpha_t = Aircraft.CheckInput("C_L_alpha_t", val);
 			return;
 		end
 
 		function obj = Set_C_L_i_t(obj, val)
-			if class(val) == "double"
-				obj.C_L_i_t = val;
-			else
-				warning("Could not set C_L_i_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_L_i_t = Aircraft.CheckInput("C_L_i_t", val);
 			return;
 		end
 
 		function obj = Set_c_l_0_t(obj, val)
-			if class(val) == "double"
-				obj.c_l_0_t = val;
-			else
-				warning("Could not set c_l_0_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_l_0_t = Aircraft.CheckInput("c_l_0_t", val);
 			return;
 		end
 
 		function obj = Set_c_l_alpha_t(obj, val)
-			if class(val) == "double"
-				obj.c_l_alpha_t = val;
-			else
-				warning("Could not set c_l_alpha_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_l_alpha_t = Aircraft.CheckInput("c_l_alpha_t", val);
 			return;
 		end
 
 		function obj = Set_C_M_i_t(obj, val)
-			if class(val) == "double"
-				obj.C_M_i_t = val;
-			else
-				warning("Could not set C_M_i_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.C_M_i_t = Aircraft.CheckInput("C_M_i_t", val);
 			return;
 		end
 
 		function obj = Set_c_m_ac_t(obj, val)
-			if class(val) == "double"
-				obj.c_m_ac_t = val;
-			else
-				warning("Could not set c_m_ac_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_m_ac_t = Aircraft.CheckInput("c_m_ac_t", val);
 			return;
 		end
 
 		function obj = Set_a_t(obj, val)
-			if class(val) == "double"
-				obj.a_t = val;
-			else
-				warning("Could not set a_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.a_t = Aircraft.CheckInput("a_t", val);
 			return;
 		end
 
 		function obj = Set_AR_t(obj, val)
-			if class(val) == "double"
-				obj.AR_t = val;
-			else
-				warning("Could not set AR_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.AR_t = Aircraft.CheckInput("AR_t", val);
 			return;
 		end
 
 		function obj = Set_lambda_t(obj, val)
-			if class(val) == "double"
-				obj.lambda_t = val;
-			else
-				warning("Could not set lambda_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.lambda_t = Aircraft.CheckInput("lambda_t", val);
 			return;
 		end
 
 		function obj = Set_sweep_t(obj, val)
-			if class(val) == "double"
-				obj.sweep_t = val;
-			else
-				warning("Could not set sweep_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.sweep_t = Aircraft.CheckInput("sweep_t", val);
 			return;
 		end
 
 		function obj = Set_gamma_t(obj, val)
-			if class(val) == "double"
-				obj.gamma_t = val;
-			else
-				warning("Could not set gamma_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.gamma_t = Aircraft.CheckInput("gamma_t", val);
 			return;
 		end
 
 		function obj = Set_i_t(obj, val)
-			if class(val) == "double"
-				obj.i_t = val;
-			else
-				warning("Could not set i_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.i_t = Aircraft.CheckInput("i_t", val);
 			return;
 		end
 
 		function obj = Set_i_t_trim(obj, val)
-			if class(val) == "double"
-				obj.i_t_trim = val;
-			else
-				warning("Could not set i_t_trim to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.i_t_trim = Aircraft.CheckInput("i_t_trim", val);
 			return;
 		end
 
 		function obj = Set_alpha_t(obj, val)
-			if class(val) == "double"
-				obj.alpha_t = val;
-			else
-				warning("Could not set alpha_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.alpha_t = Aircraft.CheckInput("alpha_t", val);
 			return;
 		end
 
 		function obj = Set_alpha_L_0_t(obj, val)
-			if class(val) == "double"
-				obj.alpha_L_0_t = val;
-			else
-				warning("Could not set alpha_L_0_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.alpha_L_0_t = Aircraft.CheckInput("alpha_L_0_t", val);
 			return;
 		end
 
 		function obj = Set_alpha_t_trim(obj, val)
-			if class(val) == "double"
-				obj.alpha_t_trim = val;
-			else
-				warning("Could not set alpha_t_trim to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.alpha_t_trim = Aircraft.CheckInput("alpha_t_trim", val);
 			return;
 		end
 
 		function obj = Set_delta_e_trim(obj, val)
-			if class(val) == "double"
-				obj.delta_e_trim = val;
-			else
-				warning("Could not set delta_e_trim to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.delta_e_trim = Aircraft.CheckInput("delta_e_trim", val);
 			return;
 		end
 
 		function obj = Set_epsilon_alpha_t(obj, val)
-			if class(val) == "double"
-				obj.epsilon_alpha_t = val;
-			else
-				warning("Could not set epsilon_alpha_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.epsilon_alpha_t = Aircraft.CheckInput( ...
+                "epsilon_alpha_t", val);
 			return;
 		end
 
 		function obj = Set_epsilon_0_t(obj, val)
-			if class(val) == "double"
-				obj.epsilon_0_t = val;
-			else
-				warning("Could not set epsilon_0_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.epsilon_0_t = Aircraft.CheckInput("epsilon_0_t", val);
 			return;
 		end
 
 		function obj = Set_q_bar_t(obj, val)
-			if class(val) == "double"
-				obj.q_bar_t = val;
-			else
-				warning("Could not set q_bar_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.q_bar_t = Aircraft.CheckInput("q_bar_t", val);
 			return;
 		end
 
 		function obj = Set_q_bar_f(obj, val)
-			if class(val) == "double"
-				obj.q_bar_f = val;
-			else
-				warning("Could not set q_bar_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.q_bar_f = Aircraft.CheckInput("q_bar_f", val);
 			return;
 		end
 
 		function obj = Set_S_t(obj, val)
-			if class(val) == "double"
-				obj.S_t = val;
-			else
-				warning("Could not set S_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.S_t = Aircraft.CheckInput("S_t", val);
 			return;
 		end
 
 		function obj = Set_S_f(obj, val)
-			if class(val) == "double"
-				obj.S_f = val;
-			else
-				warning("Could not set S_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.S_f = Aircraft.CheckInput("S_f", val);
 			return;
 		end
 
 		function obj = Set_b_t(obj, val)
-			if class(val) == "double"
-				obj.b_t = val;
-			else
-				warning("Could not set b_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.b_t = Aircraft.CheckInput("b_t", val);
 			return;
 		end
 
 		function obj = Set_b_f(obj, val)
-			if class(val) == "double"
-				obj.b_f = val;
-			else
-				warning("Could not set b_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.b_f = Aircraft.CheckInput("b_f", val);
 			return;
 		end
 
 		function obj = Set_c_bar_t(obj, val)
-			if class(val) == "double"
-				obj.c_bar_t = val;
-			else
-				warning("Could not set c_bar_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_bar_t = Aircraft.CheckInput("c_bar_t", val);
 			return;
 		end
 
 		function obj = Set_c_bar_f(obj, val)
-			if class(val) == "double"
-				obj.c_bar_f = val;
-			else
-				warning("Could not set c_bar_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_bar_f = Aircraft.CheckInput("c_bar_f", val);
 			return;
 		end
 
 		function obj = Set_c_r_t(obj, val)
-			if class(val) == "double"
-				obj.c_r_t = val;
-			else
-				warning("Could not set c_r_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_r_t = Aircraft.CheckInput("c_r_t", val);
 			return;
 		end
 
 		function obj = Set_c_t_t(obj, val)
-			if class(val) == "double"
-				obj.c_t_t = val;
-			else
-				warning("Could not set c_t_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_t_t = Aircraft.CheckInput("c_t_t", val);
 			return;
 		end
 
 		function obj = Set_c_r_f(obj, val)
-			if class(val) == "double"
-				obj.c_r_f = val;
-			else
-				warning("Could not set c_r_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_r_f = Aircraft.CheckInput("c_r_f", val);
 			return;
 		end
 
 		function obj = Set_c_t_f(obj, val)
-			if class(val) == "double"
-				obj.c_t_f = val;
-			else
-				warning("Could not set c_t_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_t_f = Aircraft.CheckInput("c_t_f", val);
 			return;
 		end
 
 		function obj = Set_c_t(obj, val)
-			if class(val) == "double"
-				obj.c_t = val;
-			else
-				warning("Could not set c_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_t = Aircraft.CheckInput("c_t", val);
 			return;
 		end
 
 		function obj = Set_c_f(obj, val)
-			if class(val) == "double"
-				obj.c_f = val;
-			else
-				warning("Could not set c_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.c_f = Aircraft.CheckInput("c_f", val);
 			return;
 		end
 
 		function obj = Set_x_ac_t(obj, val)
-			if class(val) == "double"
-				obj.x_ac_t = val;
-			else
-				warning("Could not set x_ac_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_ac_t = Aircraft.CheckInput("x_ac_t", val);
 			return;
 		end
 
 		function obj = Set_x_bar_ac_t(obj, val)
-			if class(val) == "double"
-				obj.x_bar_ac_t = val;
-			else
-				warning("Could not set x_bar_ac_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.x_bar_ac_t = Aircraft.CheckInput("x_bar_ac_t", val);
 			return;
 		end
 
 		function obj = Set_y_ac_t(obj, val)
-			if class(val) == "double"
-				obj.y_ac_t = val;
-			else
-				warning("Could not set y_ac_t to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.y_ac_t = Aircraft.CheckInput("y_ac_t", val);
 			return;
 		end
 
 		function obj = Set_y_ac_f(obj, val)
-			if class(val) == "double"
-				obj.y_ac_f = val;
-			else
-				warning("Could not set y_ac_f to val, val must be " + ...
-					"class ""double""");
-			end
+			obj.y_ac_f = Aircraft.CheckInput("y_ac_f", val);
 			return;
         end
     end
@@ -2681,7 +1881,8 @@ classdef Aircraft
             end
         
             %% Prints out unknown required variables preventing the solve
-            warning("Solve_C_L: insufficient known variables to solve for C_L");
+            warning("Solve_C_L: insufficient known variables to " + ...
+                "solve for C_L");
             fprintf("Unknown variables:\n")
             for i_var_set = 1:num_var_sets
                 var_set = var_sets{i_var_set};
@@ -2746,7 +1947,8 @@ classdef Aircraft
             end
         
             %% Prints out unknown required variables preventing the solve
-            warning("Solve_C_L: insufficient known variables to solve for C_L");
+            warning("Solve_: insufficient known variables to " + ...
+                "solve for ");
             fprintf("Unknown variables:\n")
             for i_var_set = 1:num_var_sets
                 var_set = var_sets{i_var_set};
@@ -2772,6 +1974,38 @@ classdef Aircraft
                 end
             end
 
+            return;
+        end
+    end
+
+    methods (Static, Access = private)
+        
+        % Checks input validity for scalar, real, numerical variables
+        function val = CheckInput(var_name, val)
+            if class(val) == "double"
+                if isscalar(val)
+                    if isreal(val)
+                        return;
+                    else
+                        warning("Could not initialize variable " + ...
+                            """%s""\nArgument ""%.4f"" must be" + ...
+                            "real", var_name, val);
+                        val = [];
+                        
+                    end
+                else
+                    warning("Could not initialize " + ...
+                        "variable ""%s""\nArgument must " + ...
+                        "be scalar:", var_name);
+                    disp(val);
+                    val = [];
+                end
+            else
+                warning("Could not initialize variable " + ...
+                    """%s""\nArgument ""%s"" must be " + ...
+                    "class ""double""", var_name, val);
+                val = [];
+            end
             return;
         end
     end
