@@ -21,7 +21,7 @@ if bool_make_getters
     for i_prop = 1:num_props
         prop = props{i_prop};
         function_expression = sprintf("\t\tfunction %s = Get_%s(obj)\n" + ...
-            "\t\t\t%s = obj.%s;\n" + ...
+            "\t\t\t%s = obj.%s.value;\n" + ...
             "\t\t\treturn;\n" + ...
             "\t\tend\n", prop, prop, prop, prop);
     
@@ -49,9 +49,8 @@ if bool_make_setters
         prop = props{i_prop};
         function_expression = sprintf("\t\tfunction obj = Set_%s(" + ...
             "obj, val)\n" + ...
-            "\t\t\tobj.%s = Aircraft.CheckInput(""%s"", val);\n" + ...
-            "\t\t\treturn;\n" + ...
-            "\t\tend\n", prop, prop, prop);
+            "\t\t\tobj.%s.value = Aircraft.CheckInput(""%s"", " + ...
+            "val);\n\t\t\treturn;\n\t\tend\n", prop, prop, prop);
     
         functions(i_prop) = function_expression;
     end
@@ -62,21 +61,53 @@ if bool_make_setters
     writelines(functions, filename_setters);
 end
 
-%% Test area
-% aircraft = Aircraft(a_t = [1, 2]);
-% aircraft.Get_a_t;
+%% Make equation permutations
+% Requires symbolic toolbox
+% Make master list of equations
+master_var_list = ["C_L"];
+num_vars = length(master_var_list);
+master_equation_list = ["C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e;", "L / (q_bar_w * S_w);"];
+num_equations = length(master_equation_list);
 
-equation = ["C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e;"];
-required_vars_control = {"C_L_0", "C_L_alpha", "alpha_w", "C_L_i_t", "i_t", "C_L_delta_e", "delta_e"};
-
-required_vars_test = GetRequired_Vars(equation)
-
-function required_vars = GetRequired_Vars(equations)
-    
-    num_equations = length(equations);
-    for i_equation = 1:num_equations
-        disp(num_equations)
-    end
-    required_vars = 1;
-    return;
+% Get all unique variables\
+required_vars = [];
+delimiters = ["+", "-", "*", "/", "^", "(", ")", ";"];
+for i_equation = 1:num_equations
+    equation = master_equation_list(i_equation);
+    equation = erase(equation, delimiters);
+    terms = strsplit(equation);
+    required_vars = unique([required_vars, terms]);
 end
+% Convert to symbolic
+syms(required_vars)
+
+% Convert equations to symbolic-friendly and remove semicolons
+master_equation_list = append(master_var_list, " == ", master_equation_list);
+erase(master_equation_list, ";")
+
+for i_var = 1:num_vars
+    equations = [C_L == C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e, ...
+                 C_L == L / (q_bar_w * S_w)];
+end
+
+all_vars = [C_L, C_L_0, C_L_alpha, alpha_w, C_L_i_t, i_t, C_L_delta_e, delta_e, L, q_bar_w, S_w];
+
+output_lines = [];
+
+for i_eq = 1:length(equations)
+    eq = equations(i_eq);
+    vars_in_eq = symvar(eq);
+    for i_var = 1:length(vars_in_eq)
+        var = vars_in_eq(i_var);
+        rearranged = solve(eq, var);
+        var_name = string(var);
+        eq_string = string(rearranged);
+        line = var_name + " = " + eq_string + ";";
+        output_lines = [output_lines, line];
+        fprintf("%s\n", line);
+    end
+end
+
+writelines(output_lines, "permutations.txt");
+
+%% Test area
