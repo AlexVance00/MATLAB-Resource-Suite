@@ -20,240 +20,296 @@
 classdef Aircraft < handle
 
     % Access should be private while not in development
-    properties (Access = public)
+    properties (Access = private)
         % <"m-kg", "ft-slugs">
         units = "ft-slugs";
 
         %% Values
         %%  Aircraft
         % Coefficients
-        % C_L = C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e
-        % C_L = L / (q_bar_w * S_w)
-        C_L = struct("value", [], "equations", ["C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e;", "L / (q_bar_w * S_w);"]);
-        C_L_0 = struct("value", [], "equations", [""]);
-        C_L_alpha = struct("value", [], "equations", [""]);
-        C_L_delta_e = struct("value", [], "equations", [""]);
-        C_L_q = struct("value", [], "equations", [""]);
-        C_L_0_prime = struct("value", [], "equations", [""]);
+        C_L = [];
+        C_L_0 = [];
+        C_L_alpha = [];
+        C_L_delta_e = [];
+        C_L_q = [];
+        C_L_0_prime = [];
 
-        C_M = struct("value", [], "equations", [""]);
-        C_M_0 = struct("value", [], "equations", [""]);
-        C_M_alpha = struct("value", [], "equations", [""]);
-        C_M_delta_e = struct("value", [], "equations", [""]);
-        C_M_q = struct("value", [], "equations", [""]);
-        C_M_0_prime = struct("value", [], "equations", [""]);
-        C_M_0_p = struct("value", [], "equations", [""]);
-        C_M_0_f = struct("value", [], "equations", [""]);
-        C_M_alpha_p = struct("value", [], "equations", [""]);
-        C_M_alpha_f = struct("value", [], "equations", [""]);
+        C_M = [];
+        C_M_0 = [];
+        C_M_alpha = [];
+        C_M_delta_e = [];
+        C_M_q = [];
+        C_M_0_prime = [];
+        C_M_0_p = [];
+        C_M_0_f = [];
+        C_M_alpha_p = [];
+        C_M_alpha_f = [];
 
-        C_y = struct("value", [], "equations", [""]);
-        C_y_beta = struct("value", [], "equations", [""]);
-        C_y_delta_r = struct("value", [], "equations", [""]);
-        C_y_r = struct("value", [], "equations", [""]);
+        C_y = [];
+        C_y_beta = [];
+        C_y_delta_r = [];
+        C_y_r = [];
 
-        C_n = struct("value", [], "equations", [""]);
-        C_n_beta = struct("value", [], "equations", [""]);
-        C_n_delta_r = struct("value", [], "equations", [""]);
-        C_n_delta_a = struct("value", [], "equations", [""]);
-        C_n_r = struct("value", [], "equations", [""]);
-        C_n_sigma = struct("value", [], "equations", [""]);
+        C_n = [];
+        C_n_beta = [];
+        C_n_delta_r = [];
+        C_n_delta_a = [];
+        C_n_r = [];
+        C_n_sigma = [];
 
-        C_l = struct("value", [], "equations", [""]);
-        C_l_beta_w = struct("value", [], "equations", [""]);
-        C_l_beta_f = struct("value", [], "equations", [""]);
-        C_l_beta_d = struct("value", [], "equations", [""]);
-        C_l_beta_s = struct("value", [], "equations", [""]);
-        C_l_delta_r = struct("value", [], "equations", [""]);
-        C_l_delta_a = struct("value", [], "equations", [""]);
-        C_l_r = struct("value", [], "equations", [""]);
-        C_l_p = struct("value", [], "equations", [""]);
+        C_l = [];
+        C_l_beta_w = [];
+        C_l_beta_f = [];
+        C_l_beta_d = [];
+        C_l_beta_s = [];
+        C_l_delta_r = [];
+        C_l_delta_a = [];
+        C_l_r = [];
+        C_l_p = [];
 
-        eta_t = struct("value", [], "equations", [""]);
-        eta_f = struct("value", [], "equations", [""]);
-        eta_1 = struct("value", [], "equations", [""]);
-        eta_2 = struct("value", [], "equations", [""]);
+        eta_t = [];
+        eta_f = [];
+        eta_1 = [];
+        eta_2 = [];
         
-        C_w = struct("value", [], "equations", [""]);
-        n = struct("value", [], "equations", [""]);
-        mu = struct("value", [], "equations", [""]);
-        nu = struct("value", [], "equations", [""]);
+        C_w = [];
+        n = [];
+        mu = [];
+        nu = [];
 
         % Angles
-        beta = struct("value", [], "equations", [""]);
-        sigma_beta = struct("value", [], "equations", [""]);
-        sigma_0 = struct("value", [], "equations", [""]);
-        phi = struct("value", [], "equations", [""]);
-        theta = struct("value", [], "equations", [""]);
-        psi = struct("value", [], "equations", [""]);
-        phi_dot = struct("value", [], "equations", [""]);
-        theta_dot = struct("value", [], "equations", [""]);
-        psi_dot = struct("value", [], "equations", [""]);
+        beta = [];
+        sigma_beta = [];
+        sigma_0 = [];
+        phi = [];
+        theta = [];
+        psi = [];
+        phi_dot = [];
+        theta_dot = [];
+        psi_dot = [];
 
         % Rotation rates and rotation accelerations
-        p_i = struct("value", [], "equations", [""]);
-        q_i = struct("value", [], "equations", [""]);
-        r_i = struct("value", [], "equations", [""]);
-        p_i_dot = struct("value", [], "equations", [""]);
-        q_i_dot = struct("value", [], "equations", [""]);
-        r_i_dot = struct("value", [], "equations", [""]);
-        p_b = struct("value", [], "equations", [""]);
-        q_b = struct("value", [], "equations", [""]);
-        r_b = struct("value", [], "equations", [""]);
-        p_b_dot = struct("value", [], "equations", [""]);
-        q_b_dot = struct("value", [], "equations", [""]);
-        r_b_dot = struct("value", [], "equations", [""]);
+        p_i = [];
+        q_i = [];
+        r_i = [];
+        p_i_dot = [];
+        q_i_dot = [];
+        r_i_dot = [];
+        p_b = [];
+        q_b = [];
+        r_b = [];
+        p_b_dot = [];
+        q_b_dot = [];
+        r_b_dot = [];
 
         % Velocities and accelerations
-        u = struct("value", [], "equations", [""]);
-        v = struct("value", [], "equations", [""]);
-        w = struct("value", [], "equations", [""]);
-        u_dot = struct("value", [], "equations", [""]);
-        v_dot = struct("value", [], "equations", [""]);
-        w_dot = struct("value", [], "equations", [""]);
+        u = [];
+        v = [];
+        w = [];
+        u_dot = [];
+        v_dot = [];
+        w_dot = [];
 
         % Mass properties
-        W = struct("value", [], "equations", [""]);
-        m = struct("value", [], "equations", [""]);
-        I_xx = struct("value", [], "equations", [""]);
-        I_yy = struct("value", [], "equations", [""]);
-        I_zz = struct("value", [], "equations", [""]);
-        I_xy = struct("value", [], "equations", [""]);
-        I_xz = struct("value", [], "equations", [""]);
-        I_yz = struct("value", [], "equations", [""]);
+        W = [];
+        m = [];
+        I_xx = [];
+        I_yy = [];
+        I_zz = [];
+        I_xy = [];
+        I_xz = [];
+        I_yz = [];
 
         % Forces and moments
-        sum_F = struct("value", [], "equations", [""]);
-        L = struct("value", [], "equations", [""]);
-        D = struct("value", [], "equations", [""]);
-        T = struct("value", [], "equations", [""]);
-        sum_M = struct("value", [], "equations", [""]);
-        M = struct("value", [], "equations", [""]);
-        N_T = struct("value", [], "equations", [""]);
+        sum_F = [];
+        L = [];
+        D = [];
+        T = [];
+        sum_M = [];
+        M = [];
+        N_T = [];
 
         % Non-aircraft-related constants
-        rho = struct("value", [], "equations", [""]);
-        g = struct("value", [], "equations", [""]);
+        rho = [];
+        g = [];
 
         % Geometry
-        x_cg = struct("value", [], "equations", [""]);
-        x_bar_cg = struct("value", [], "equations", [""]);
-        x_ac = struct("value", [], "equations", [""]);
-        x_bar_ac = struct("value", [], "equations", [""]);
-        z_cg = struct("value", [], "equations", [""]);
-        SM = struct("value", [], "equations", [""]);
+        x_cg = [];
+        x_bar_cg = [];
+        x_ac = [];
+        x_bar_ac = [];
+        z_cg = [];
+        SM = [];
 
         %% Wing
         % Coefficients
-        C_L_0_w = struct("value", [], "equations", [""]);
-        C_L_alpha_w = struct("value", [], "equations", [""]);
-        c_l_0_w = struct("value", [], "equations", [""]);
-        c_l_alpha_w = struct("value", [], "equations", [""]);
+        C_L_0_w = [];
+        C_L_alpha_w = [];
+        c_l_0_w = [];
+        c_l_alpha_w = [];
 
-        c_m_ac_w = struct("value", [], "equations", [""]);
+        c_m_ac_w = [];
 
-        a_w = struct("value", [], "equations", [""]);
+        a_w = [];
 
-        AR_w = struct("value", [], "equations", [""]);
-        lambda_w = struct("value", [], "equations", [""]);
-        sweep_w = struct("value", [], "equations", [""]);
-        gamma_w = struct("value", [], "equations", [""]);
-        tau_w = struct("value", [], "equations", [""]);
+        AR_w = [];
+        lambda_w = [];
+        sweep_w = [];
+        gamma_w = [];
+        tau_w = [];
 
         % Angles
-        i_w = struct("value", [], "equations", [""]);
-        alpha_w = struct("value", [], "equations", [""]);
-        alpha_L_0_w = struct("value", [], "equations", [""]);
-        alpha_w_trim = struct("value", [], "equations", [""]);
-        alpha_w_trim_delta_e_0 = struct("value", [], "equations", [""]);
-        delta_a_w = struct("value", [], "equations", [""]);
-        delta_alpha = struct("value", [], "equations", [""]);
+        i_w = [];
+        alpha_w = [];
+        alpha_L_0_w = [];
+        alpha_w_trim = [];
+        alpha_w_trim_delta_e_0 = [];
+        delta_a_w = [];
+        delta_alpha = [];
 
         % Flight conditions
-        q_bar_w = struct("value", [], "equations", [""]);
+        q_bar_w = [];
 
         % Geometry
-        S_w = struct("value", [], "equations", [""]);
-        b_w = struct("value", [], "equations", [""]);
-        c_bar_w = struct("value", [], "equations", [""]);
-        c_r_w = struct("value", [], "equations", [""]);
-        c_t_w = struct("value", [], "equations", [""]);
-        c_w = struct("value", [], "equations", [""]);
+        S_w = [];
+        b_w = [];
+        c_bar_w = [];
+        c_r_w = [];
+        c_t_w = [];
+        c_w = [];
 
-        x_ac_w = struct("value", [], "equations", [""]);
-        x_bar_ac_w = struct("value", [], "equations", [""]);
-        y_ac_w = struct("value", [], "equations", [""]);
+        x_ac_w = [];
+        x_bar_ac_w = [];
+        y_ac_w = [];
 
         %% Horizontal Tail
         % Coefficients
-        C_L_0_t = struct("value", [], "equations", [""]);
-        C_L_alpha_t = struct("value", [], "equations", [""]);
-        C_L_i_t = struct("value", [], "equations", [""]);
-        c_l_0_t = struct("value", [], "equations", [""]);
-        c_l_alpha_t = struct("value", [], "equations", [""]);
+        C_L_0_t = [];
+        C_L_alpha_t = [];
+        C_L_i_t = [];
+        c_l_0_t = [];
+        c_l_alpha_t = [];
 
-        C_M_i_t = struct("value", [], "equations", [""]);
-        c_m_ac_t = struct("value", [], "equations", [""]);
+        C_M_i_t = [];
+        c_m_ac_t = [];
 
-        a_t = struct("value", [], "equations", [""]);
+        a_t = [];
 
-        AR_t = struct("value", [], "equations", [""]);
-        lambda_t = struct("value", [], "equations", [""]);
-        sweep_t = struct("value", [], "equations", [""]);
-        gamma_t = struct("value", [], "equations", [""]);
-        tau_t = struct("value", [], "equations", [""]);
+        AR_t = [];
+        lambda_t = [];
+        sweep_t = [];
+        gamma_t = [];
+        tau_t = [];
 
         % Angles
-        i_t = struct("value", [], "equations", [""]);
-        i_t_trim = struct("value", [], "equations", [""]);
-        alpha_t = struct("value", [], "equations", [""]);
-        alpha_L_0_t = struct("value", [], "equations", [""]);
-        alpha_t_trim = struct("value", [], "equations", [""]);
-        delta_e_trim = struct("value", [], "equations", [""]);
-        epsilon_alpha_t = struct("value", [], "equations", [""]);
-        epsilon_0_t = struct("value", [], "equations", [""]);
-        delta_e = struct("value", [], "equations", [""]);
-        delta_delta_e = struct("value", [], "equations", [""]);
-        delta_a_t = struct("value", [], "equations", [""]);
+        i_t = [];
+        i_t_trim = [];
+        alpha_t = [];
+        alpha_L_0_t = [];
+        alpha_t_trim = [];
+        delta_e_trim = [];
+        epsilon_alpha_t = [];
+        epsilon_0_t = [];
+        delta_e = [];
+        delta_delta_e = [];
+        delta_a_t = [];
 
         % Flight conditions
-        q_bar_t = struct("value", [], "equations", [""]);
-        q_bar_f = struct("value", [], "equations", [""]);
+        q_bar_t = [];
+        q_bar_f = [];
 
         % Geometry
-        S_t = struct("value", [], "equations", [""]);
-        b_t = struct("value", [], "equations", [""]);
-        c_bar_t = struct("value", [], "equations", [""]);
-        c_r_t = struct("value", [], "equations", [""]);
-        c_t_t = struct("value", [], "equations", [""]);
+        S_t = [];
+        b_t = [];
+        c_bar_t = [];
+        c_r_t = [];
+        c_t_t = [];
 
         % Equations
-        c_t = struct("value", [], "equations", [""]);
+        c_t = [];
         
-        x_ac_t = struct("value", [], "equations", [""]);
-        x_bar_ac_t = struct("value", [], "equations", [""]);
-        y_ac_t = struct("value", [], "equations", [""]);
+        x_ac_t = [];
+        x_bar_ac_t = [];
+        y_ac_t = [];
 
         %% Vertical Fin
         % Coefficients
-        C_L_alpha_f = struct("value", [], "equations", [""]);
+        C_L_alpha_f = [];
 
         % Angles
-        delta_r = struct("value", [], "equations", [""]);
+        delta_r = [];
 
         % Geometry
-        S_f = struct("value", [], "equations", [""]);
-        b_f = struct("value", [], "equations", [""]);
-        c_bar_f = struct("value", [], "equations", [""]);
-        c_r_f = struct("value", [], "equations", [""]);
-        c_t_f = struct("value", [], "equations", [""]);
+        S_f = [];
+        b_f = [];
+        c_bar_f = [];
+        c_r_f = [];
+        c_t_f = [];
 
         % Equations
-        c_f = struct("value", [], "equations", [""]);
+        c_f = [];
 
-        x_bar_ac_f = struct("value", [], "equations", [""]);
-        x_ac_f = struct("value", [], "equations", [""]);
-        y_ac_f = struct("value", [], "equations", [""]);
+        x_bar_ac_f = [];
+        x_ac_f = [];
+        y_ac_f = [];
+
+        %% Equation Set
+        equations = ["x_bar_ac = (1/C_L_alpha) * (C_L_alpha_w * x_bar_ac_w + eta_t * (S_t/S_w) * C_L_alpha_t * (1 - epsilon_alpha_t) * x_bar_ac_t - C_M_alpha_p - C_M_alpha_f);";
+                     "C_M = C_M_0 + C_M_alpha * alpha_w + C_M_i_t * i_t + C_M_delta_e * delta_e;";
+                     "C_M_0 = c_m_ac_w + eta_t * (S_t/S_w) * (c_bar_t/c_bar_w) * c_m_ac_t + C_M_0_p + C_M_0_f + (x_bar_cg - x_bar_ac_w) * (C_L_0_w + C_L_alpha_w * i_w) + eta_t * (S_t/S_w) * (x_bar_cg - x_bar_ac_t) * (C_L_0_t - C_L_alpha_t * epsilon_0_t);";
+                     "C_M_alpha = C_M_alpha_p + C_M_alpha_f + (x_bar_cg - x_bar_ac_w) * C_L_alpha_w + eta_t * (S_t/S_w) * (x_bar_cg - x_bar_ac_t) * C_L_alpha_t * (1 - epsilon_alpha_t);";
+                     "C_M_alpha = -(x_bar_ac - x_bar_cg) * C_L_alpha;";
+                     "C_M_i_t = eta_t * (S_t/S_w) * (x_bar_cg - x_bar_ac_t) * C_L_alpha_t;";
+                     "C_M_delta_e = eta_t * (S_t/S_w) * (x_bar_cg - x_bar_ac_t) * C_L_delta_e;";
+                     "SM = x_bar_ac - x_bar_cg;";
+                     "alpha_w_trim_delta_e_0 = (C_M_i_t * (C_L_0 - W/(q_bar_w*S_w)) - C_L_i_t * C_M_0) / (C_M_alpha * C_L_i_t - C_M_i_t * C_L_alpha);";
+                     "i_t_trim = (C_M_alpha * (W/(q_bar_w*S_w) - C_L_0) + C_L_alpha * C_M_0) / (C_M_alpha * C_L_i_t - C_M_i_t * C_L_alpha);";
+                     "alpha_w_trim = (W/(q_bar_w*S_w) - C_L_0_prime + C_M_0_prime * (C_L_delta_e/C_M_delta_e)) / (C_L_alpha - C_M_alpha * (C_L_delta_e/C_M_delta_e));";
+                     "delta_e_trim = (W/(q_bar_w*S_w) - C_L_0_prime + C_M_0_prime * (C_L_alpha/C_M_alpha)) / (C_L_delta_e - C_M_delta_e * (C_L_alpha/C_M_alpha));";
+                     "lambda_w = c_t_w / c_r_w;";
+                     "S_w = (b_w/2) * c_r_w * (1 + lambda_w);";
+                     "c_bar_w = (2*c_r_w/3) * (1 + lambda_w + lambda_w^2) / (1 + lambda_w);";
+                     "AR_w = b_w^2 / S_w;";
+                     "y_ac_w = (b_w/6) * (1 + 2*lambda_w) / (1 + lambda_w);";
+                     "x_ac_w = c_bar_w/4 + y_ac_w * tan(sweep_w);";
+                     "C_L = C_L_0 + C_L_alpha * alpha_w + C_L_i_t * i_t + C_L_delta_e * delta_e;";
+                     "C_L_0 = C_L_0_w + C_L_alpha_w * i_w + eta_t * (S_t/S_w) * (C_L_0_t - C_L_alpha_t * epsilon_0_t);";
+                     "C_L_alpha = C_L_alpha_w + eta_t * (S_t/S_w) * C_L_alpha_t * (1 - epsilon_alpha_t);";
+                     "C_L_i_t = eta_t * (S_t/S_w) * C_L_alpha_t;";
+                     "C_L_delta_e = eta_t * (S_t/S_w) * C_L_delta_e_t;";
+                     "n = 1 + u * q_b / g;";
+                     "C_w = W / (q_bar_w * S_w);";
+                     "mu = m / (0.5 * rho * S_w * c_bar_w);";
+                     "C_L_q = 2 * eta_t * (S_t/S_w) * (x_bar_ac_t - x_bar_cg) * C_L_alpha_t;";
+                     "C_M_q = -C_L_q * (x_bar_ac_t - x_bar_cg);";
+                     "delta_alpha = (C_w / (C_L_alpha * C_M_delta_e - C_L_delta_e * C_M_alpha)) * (C_M_delta_e - (1/(2*mu)) * (C_M_delta_e * C_L_q - C_L_delta_e * C_M_q)) * (n - 1);";
+                     "delta_delta_e = -(C_w / (C_L_alpha * C_M_delta_e - C_L_delta_e * C_M_alpha)) * (C_M_alpha - (1/(2*mu)) * (C_M_alpha * C_L_q - C_L_alpha * C_M_q)) * (n - 1);";
+                     "C_y = C_y_beta * beta + C_y_delta_r * delta_r + (b_w/(2*u)) * C_y_r * r_b;";
+                     "C_n = C_n_beta * beta + C_n_delta_r * delta_r + C_n_delta_a * delta_a + (b_w/(2*u)) * C_n_r * r_b;";
+                     "C_l = (C_l_beta_w + C_l_beta_f + C_l_beta_d + C_l_beta_s) * beta + C_l_delta_r * delta_r + C_l_delta_a * delta_a + (b_w/(2*u)) * C_l_r * r_b + (b_w/(2*u)) * C_l_p * p_b;";
+                     "C_y_beta = -(q_bar_f/q_bar_w) * (S_f/S_w) * C_L_alpha_f * (1 - sigma_beta);";
+                     "C_y_delta_r = (q_bar_f/q_bar_w) * (S_f/S_w) * C_L_delta_r;";
+                     "C_y_r = 2 * (q_bar_f/q_bar_w) * (S_f/S_w) * (x_ac_f - x_cg) / b_w * C_L_alpha_f;";
+                     "C_n_beta = (q_bar_f/q_bar_w) * (S_f/S_w) * (x_ac_f - x_cg) / b_w * C_L_alpha_f * (1 - sigma_beta);";
+                     "C_n_delta_r = -(q_bar_f/q_bar_w) * (S_f/S_w) * (x_ac_f - x_cg) / b_w * C_L_delta_r;";
+                     "C_n_r = -2 * (q_bar_f/q_bar_w) * (S_f/S_w) * ((x_ac_f - x_cg) / b_w)^2 * C_L_alpha_f;";
+                     "C_l_beta_f = -(q_bar_f/q_bar_w) * (S_f/S_w) * (y_ac_f - z_cg) / b_w * C_L_alpha_f * (1 - sigma_beta);";
+                     "C_l_beta_d = -(y_ac_w/b_w) * C_L_alpha_w * gamma_w;";
+                     "C_l_beta_s = -2 * (y_ac_w/b_w) * C_L * cos(sweep_w) * sin(sweep_w);";
+                     "C_l_delta_r = (q_bar_f/q_bar_w) * (S_f/S_w) * (y_ac_f - z_cg) / b_w * C_L_delta_r;";
+                     "C_l_delta_a = (tau_w * c_r_w * C_L_alpha_w / S_w) * (b_w/2) * (0.5*eta_2^2 + ((lambda_w - 1)/3)*eta_2^3 - 0.5*eta_1^2 - ((lambda_w - 1)/3)*eta_1^3);";
+                     "C_l_r = 2 * (q_bar_f/q_bar_w) * (S_f/S_w) * (x_ac_f - x_cg) / b_w * (y_ac_f - z_cg) / b_w * C_L_alpha_f;";
+                     "C_l_p = -(1/12) * ((1 + 3*lambda_w)/(1 + lambda_w)) * (c_l_alpha_w + c_d_0);"; % trapezoidal wing
+                     "n = 1 / cos(phi);";
+                     "psi_dot = (g/u) * tan(phi);";
+                     "W = m * g";
+                     "nu = 2*W / (g * rho * S_w * b_w);";
+                     "p_b = phi_dot - psi_dot * sin(theta);";
+                     "q_b = theta_dot * cos(phi) + psi_dot * cos(theta) * sin(phi);";
+                     "r_b = -theta_dot * sin(phi) + psi_dot * cos(theta) * cos(phi);";
+                     "phi_dot = p_b + q_b * sin(phi) * tan(theta) + r_b * cos(phi) * tan(theta);";
+                     "theta_dot = q_b * cos(phi) - r_b * sin(phi);";
+                     "psi_dot = q_b * sin(phi) * sec(theta) + r_b * cos(phi) * sec(theta);"];
     end
 
     methods (Access = public)
@@ -277,7 +333,7 @@ classdef Aircraft < handle
                 arg_val = args.(arg_name);
 
                 if arg_name ~= "units"
-                    arg_val = Aircraft.CheckInput(arg_name, arg_val);
+                    arg_val = Aircraft.CheckInput(arg_name, arg_val, []);
                 else
                     if arg_val ~= "m-kg" && arg_val ~= "ft-slugs"
                         warning("Invalid input for 'units' " + ...
@@ -313,10 +369,14 @@ classdef Aircraft < handle
         %% Disp
         % Overwrote disp because every property is a struct, but only the
         %   "value" field is important for the user to see
-        function disp(obj)
-            prop_names = properties(Aircraft);
-            num_props = length(prop_names);
+        function disp(obj, bool_disp_full)
+            if nargin < 2
+                bool_disp_full = false;
+            end
 
+            prop_names = GetPropNames(obj);
+            num_props = length(prop_names);
+            
             prop_name_sizes = cellfun(@size, prop_names, ...
                 "UniformOutput", false);
             max_prop_name_length = max([prop_name_sizes{:}]);
@@ -324,9 +384,9 @@ classdef Aircraft < handle
             fprintf("Aircraft object with properties:\n\n");
             for i_name = 1:num_props
                 prop_name = string(prop_names{i_name});
+                prop_val = obj.(prop_name);
 
-                if prop_name ~= "units"
-                    prop_val = obj.(prop_name).value;
+                if class(prop_val) ~= "string"
                         
                     if ~isempty(prop_val)
                         % If not a whole number,
@@ -337,28 +397,25 @@ classdef Aircraft < handle
                             fprintf("\t%*s: %d\n", ...
                                 max_prop_name_length, prop_name, prop_val);
                         end
-                    else
+                    elseif bool_disp_full
                         fprintf("\t%*s: []\n", max_prop_name_length, ...
                             prop_name);
                     end
+                else
+                    fprintf("\t%*s: ""%s""\n", max_prop_name_length, ...
+                            prop_name, prop_val);
                 end
             end
+            fprintf("\n");
         end
 
         %% Universal Getter
         function val = Get(obj, var_name)
             if class(var_name) == "string"
-                if ismember(var_name, properties(Aircraft))
+                prop_names = GetPropNames(obj);
 
-                    % Need to check if var_name is "units" because "units" is a
-                    %   string, not a struct
-                    non_numeric_prop_names = ["units"];
-                    
-                    if ~ismember(var_name, non_numeric_prop_names)
-                        val = obj.(var_name).value;
-                    else
-                        val = obj.(var_name);
-                    end
+                if ismember(var_name, prop_names)
+                    val = obj.(var_name);
                 else
                     warning("No property ""%s"" of Aircraft", var_name);
                 end
@@ -369,20 +426,33 @@ classdef Aircraft < handle
         end
         
         %% Universal Setter
-        function obj = Set(obj,var_name, val)
-            % Need to check if var_name is "units" because "units" is a
-            %   string, not a struct
-            non_numeric_prop_names = ["units"];
-            if ~ismember(var_name, non_numeric_prop_names)
-                obj.(var_name).value = Aircraft.CheckInput(var_name, val);
+        function obj = Set(obj, var_name, val)
+            prop_names = GetPropNames(obj);
+            if ismember(var_name, prop_names)
+                % Need to check if var_name is "units" because "units" is a
+                %   string
+                non_numeric_prop_names = ["units"];
+                if ~ismember(var_name, non_numeric_prop_names)
+                    current_val = obj.Get(var_name);
+                    obj.(var_name) = Aircraft.CheckInput(var_name, ...
+                        val, current_val);
+                else
+                    obj.(var_name) = val;
+                end
             else
-                obj.(var_name) = val;
+                warning("No property ""%s"" of Aircraft", var_name);
             end
 	        return;
         end
     end
 
     methods (Access = private)
+        % Get all prop names, even when access is private
+        function prop_names = GetPropNames(obj)
+            mc = metaclass(obj);
+            prop_names = string({mc.PropertyList.Name})';
+            return;
+        end
 
         %% Solvers
         % Solves for, but does not return, the input variable
@@ -509,30 +579,32 @@ classdef Aircraft < handle
     methods (Static, Access = private)
 
         % Checks input validity for scalar, real, numerical variables
-        function val = CheckInput(var_name, val)
-            if class(val) == "double"
-                if isscalar(val)
-                    if isreal(val)
+        function new_val = CheckInput(var_name, new_val, current_val)
+            
+            % Special Input Checking
+            if class(new_val) == "double"
+                if isscalar(new_val) || isempty(new_val)
+                    if isreal(new_val)
                         return;
                     else
-                        warning("Could not initialize variable " + ...
+                        warning("Could not set variable " + ...
                             """%s""\nArgument ""%.4f"" must be" + ...
-                            "real", var_name, val);
-                        val = [];
+                            "real", var_name, new_val);
+                        new_val = [];
                         
                     end
                 else
-                    warning("Could not initialize " + ...
+                    warning("Could not set " + ...
                         "variable ""%s""\nArgument must " + ...
                         "be scalar:", var_name);
-                    disp(val);
-                    val = [];
+                    disp(new_val);
+                    new_val = current_val; 
                 end
             else
-                warning("Could not initialize variable " + ...
-                    """%s""\nArgument ""%s"" must be " + ...
-                    "class ""double""", var_name, val);
-                val = [];
+                warning("Could not set variable " + ...
+                        """%s""\nArgument ""%s"" must be " + ...
+                        "class ""double""", var_name, new_val);
+                new_val = current_val;                
             end
             return;
         end

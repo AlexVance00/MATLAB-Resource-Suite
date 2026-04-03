@@ -9,7 +9,7 @@ props = properties(Aircraft);
 num_props = length(props);
 
 %% Make equation permutations
-bool_make_equation_permutations = true;
+bool_make_equation_permutations = false;
 % Requires symbolic toolbox
 if bool_make_equation_permutations
     % Make master list of equations
@@ -65,3 +65,8 @@ if bool_make_equation_permutations
 end
 
 %% Test Area
+aircraft_1 = Aircraft();
+aircraft_1.Set("C_L", 87)
+aircraft_1.Set("C_L", "wut")
+aircraft_1.Set("shite", 87)
+aircraft_1.Set("C_L", [])
