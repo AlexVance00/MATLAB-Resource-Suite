@@ -1,0 +1,37 @@
+%% HARD CODE — small-c coefficients (anonymous functions)
+
+% Section pitching moment at AC — wing and tail
+% These are airfoil-dependent, typically looked up or curve-fit
+c_m_ac_w = @(alpha) ...   % e.g. constant or function of alpha
+c_m_ac_t = @(alpha) ...
+
+% Section lift slope and zero-lift — used in integral forms below
+c_l_alpha_w = @(y) ...    % may vary spanwise
+c_l_0_w     = @(y) ...
+c_l_alpha_t = @(y) ...
+c_l_0_t     = @(y) ...
+
+% Section zero-lift drag — used in C_l_p
+c_d_0 = @(y) ...          % or scalar if assumed constant
+
+%% HARD CODE — integral forms
+
+% Wing reference area (general, non-trapezoidal)
+S_w = 2 * integral(@(y) c_w(y), 0, b_w/2);
+
+% Mean aerodynamic chord (general)
+c_bar_w = (2/S_w) * integral(@(y) c_w(y).^2, 0, b_w/2);
+
+% Wing AC x-location (general)
+x_ac_w = (2/S_w) * integral(@(y) x_w(y) .* c_w(y), 0, b_w/2);
+
+% Wing AC y-location (general)
+y_ac_w = (2/S_w) * integral(@(y) y .* c_w(y), 0, b_w/2);
+
+% Aircraft lift coefficients (general lifting surface)
+C_L_0_w = (2/S_w) * integral(@(y) c_l_0_w(y) .* c_w(y), 0, b_w/2);
+C_L_alpha_w = (2/S_w) * integral(@(y) c_l_alpha_w(y) .* c_w(y), 0, b_w/2);
+
+% Pitch moment (general)
+M = 2*q_bar_w * integral(@(y) c_m_ac_w(y) .* c_w(y).^2, 0, b_w/2) ...
+  - 2*q_bar_w * integral(@(y) c_l_w(y) .* c_w(y) .* x_w(y), 0, b_w/2);

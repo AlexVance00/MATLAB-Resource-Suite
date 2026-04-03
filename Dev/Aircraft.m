@@ -69,7 +69,8 @@ classdef Aircraft < handle
         C_l_r = struct("value", [], "equations", [""]);
         C_l_p = struct("value", [], "equations", [""]);
 
-        eta = struct("value", [], "equations", [""]);
+        eta_t = struct("value", [], "equations", [""]);
+        eta_f = struct("value", [], "equations", [""]);
         eta_1 = struct("value", [], "equations", [""]);
         eta_2 = struct("value", [], "equations", [""]);
         
@@ -85,9 +86,9 @@ classdef Aircraft < handle
         phi = struct("value", [], "equations", [""]);
         theta = struct("value", [], "equations", [""]);
         psi = struct("value", [], "equations", [""]);
-        delta_a = struct("value", [], "equations", [""]);
-        delta_e = struct("value", [], "equations", [""]);
-        delta_r = struct("value", [], "equations", [""]);
+        phi_dot = struct("value", [], "equations", [""]);
+        theta_dot = struct("value", [], "equations", [""]);
+        psi_dot = struct("value", [], "equations", [""]);
 
         % Rotation rates and rotation accelerations
         p_i = struct("value", [], "equations", [""]);
@@ -157,6 +158,7 @@ classdef Aircraft < handle
         lambda_w = struct("value", [], "equations", [""]);
         sweep_w = struct("value", [], "equations", [""]);
         gamma_w = struct("value", [], "equations", [""]);
+        tau_w = struct("value", [], "equations", [""]);
 
         % Angles
         i_w = struct("value", [], "equations", [""]);
@@ -164,6 +166,8 @@ classdef Aircraft < handle
         alpha_L_0_w = struct("value", [], "equations", [""]);
         alpha_w_trim = struct("value", [], "equations", [""]);
         alpha_w_trim_delta_e_0 = struct("value", [], "equations", [""]);
+        delta_a_w = struct("value", [], "equations", [""]);
+        delta_alpha = struct("value", [], "equations", [""]);
 
         % Flight conditions
         q_bar_w = struct("value", [], "equations", [""]);
@@ -180,7 +184,7 @@ classdef Aircraft < handle
         x_bar_ac_w = struct("value", [], "equations", [""]);
         y_ac_w = struct("value", [], "equations", [""]);
 
-        %% Tail
+        %% Horizontal Tail
         % Coefficients
         C_L_0_t = struct("value", [], "equations", [""]);
         C_L_alpha_t = struct("value", [], "equations", [""]);
@@ -197,6 +201,7 @@ classdef Aircraft < handle
         lambda_t = struct("value", [], "equations", [""]);
         sweep_t = struct("value", [], "equations", [""]);
         gamma_t = struct("value", [], "equations", [""]);
+        tau_t = struct("value", [], "equations", [""]);
 
         % Angles
         i_t = struct("value", [], "equations", [""]);
@@ -207,6 +212,9 @@ classdef Aircraft < handle
         delta_e_trim = struct("value", [], "equations", [""]);
         epsilon_alpha_t = struct("value", [], "equations", [""]);
         epsilon_0_t = struct("value", [], "equations", [""]);
+        delta_e = struct("value", [], "equations", [""]);
+        delta_delta_e = struct("value", [], "equations", [""]);
+        delta_a_t = struct("value", [], "equations", [""]);
 
         % Flight conditions
         q_bar_t = struct("value", [], "equations", [""]);
@@ -214,21 +222,37 @@ classdef Aircraft < handle
 
         % Geometry
         S_t = struct("value", [], "equations", [""]);
-        S_f = struct("value", [], "equations", [""]);
         b_t = struct("value", [], "equations", [""]);
-        b_f = struct("value", [], "equations", [""]);
         c_bar_t = struct("value", [], "equations", [""]);
-        c_bar_f = struct("value", [], "equations", [""]);
         c_r_t = struct("value", [], "equations", [""]);
         c_t_t = struct("value", [], "equations", [""]);
-        c_r_f = struct("value", [], "equations", [""]);
-        c_t_f = struct("value", [], "equations", [""]);
+
+        % Equations
         c_t = struct("value", [], "equations", [""]);
-        c_f = struct("value", [], "equations", [""]);
         
         x_ac_t = struct("value", [], "equations", [""]);
         x_bar_ac_t = struct("value", [], "equations", [""]);
         y_ac_t = struct("value", [], "equations", [""]);
+
+        %% Vertical Fin
+        % Coefficients
+        C_L_alpha_f = struct("value", [], "equations", [""]);
+
+        % Angles
+        delta_r = struct("value", [], "equations", [""]);
+
+        % Geometry
+        S_f = struct("value", [], "equations", [""]);
+        b_f = struct("value", [], "equations", [""]);
+        c_bar_f = struct("value", [], "equations", [""]);
+        c_r_f = struct("value", [], "equations", [""]);
+        c_t_f = struct("value", [], "equations", [""]);
+
+        % Equations
+        c_f = struct("value", [], "equations", [""]);
+
+        x_bar_ac_f = struct("value", [], "equations", [""]);
+        x_ac_f = struct("value", [], "equations", [""]);
         y_ac_f = struct("value", [], "equations", [""]);
     end
 
