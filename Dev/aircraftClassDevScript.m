@@ -5,9 +5,10 @@ clc
 
 %% Code Generators
     %% Get property names
-% Properties access should be private while not in development
-props = properties(Aircraft);
-num_props = length(props);
+aircraft_example = Aircraft();
+mc = metaclass(aircraft_example);
+prop_names = string({mc.PropertyList.Name})';
+num_props = length(prop_names);
 
     %% Save Equations
 bool_save_equations = false;
@@ -35,7 +36,7 @@ if bool_save_equations
                          "C_L_0 = C_L_0_w + C_L_alpha_w * i_w + eta_t * (S_t/S_w) * (C_L_0_t - C_L_alpha_t * epsilon_0_t);";
                          "C_L_alpha = C_L_alpha_w + eta_t * (S_t/S_w) * C_L_alpha_t * (1 - epsilon_alpha_t);";
                          "C_L_i_t = eta_t * (S_t/S_w) * C_L_alpha_t;";
-                         "C_L_delta_e = eta_t * (S_t/S_w) * C_L_delta_e_t;";
+                         "C_L_delta_e = eta_t * (S_t/S_w) * C_L_delta_e;";
                          "n = 1 + u * q_b / g;";
                          "C_w = W / (q_bar_w * S_w);";
                          "mu = m / (0.5 * rho * S_w * c_bar_w);";
@@ -44,8 +45,8 @@ if bool_save_equations
                          "delta_alpha = (C_w / (C_L_alpha * C_M_delta_e - C_L_delta_e * C_M_alpha)) * (C_M_delta_e - (1/(2*mu)) * (C_M_delta_e * C_L_q - C_L_delta_e * C_M_q)) * (n - 1);";
                          "delta_delta_e = -(C_w / (C_L_alpha * C_M_delta_e - C_L_delta_e * C_M_alpha)) * (C_M_alpha - (1/(2*mu)) * (C_M_alpha * C_L_q - C_L_alpha * C_M_q)) * (n - 1);";
                          "C_y = C_y_beta * beta + C_y_delta_r * delta_r + (b_w/(2*u)) * C_y_r * r_b;";
-                         "C_n = C_n_beta * beta + C_n_delta_r * delta_r + C_n_delta_a * delta_a + (b_w/(2*u)) * C_n_r * r_b;";
-                         "C_l = (C_l_beta_w + C_l_beta_f + C_l_beta_d + C_l_beta_s) * beta + C_l_delta_r * delta_r + C_l_delta_a * delta_a + (b_w/(2*u)) * C_l_r * r_b + (b_w/(2*u)) * C_l_p * p_b;";
+                         "C_n = C_n_beta * beta + C_n_delta_r * delta_r + C_n_delta_a * delta_a_w + (b_w/(2*u)) * C_n_r * r_b;";
+                         "C_l = (C_l_beta_w + C_l_beta_f + C_l_beta_d + C_l_beta_s) * beta + C_l_delta_r * delta_r + C_l_delta_a * delta_a_w + (b_w/(2*u)) * C_l_r * r_b + (b_w/(2*u)) * C_l_p * p_b;";
                          "C_y_beta = -(q_bar_f/q_bar_w) * (S_f/S_w) * C_L_alpha_f * (1 - sigma_beta);";
                          "C_y_delta_r = (q_bar_f/q_bar_w) * (S_f/S_w) * C_L_delta_r;";
                          "C_y_r = 2 * (q_bar_f/q_bar_w) * (S_f/S_w) * (x_ac_f - x_cg) / b_w * C_L_alpha_f;";
@@ -76,7 +77,7 @@ if bool_save_equations
 end
 
     %% Make equation permutations
-bool_make_equation_permutations = true;
+bool_make_equation_permutations = false;
 
 % Requires symbolic toolbox
 if bool_make_equation_permutations
@@ -143,8 +144,17 @@ if bool_make_equation_permutations
         end
     end
 
+    % Now split up equation_sets to improve load efficiency for loading
+    %   equations later
+    num_vars = length(master_var_list);
+    for i_var = 1:num_vars
+        var_name = master_var_list(i_var);
+        equations = equation_sets.(var_name);
+        eval(append(var_name, " = equations;"));
+    end
+
     filename_permutations = append(pwd, "\permutations.mat");
-    save(filename_permutations, "equation_sets");
+    save(filename_permutations, master_var_list_cell{:});
 end
 
 %% Method Test Cases
@@ -350,3 +360,6 @@ if bool_test_set
 end
 
 %% Testing Area
+aircraft_1 = Aircraft();
+aircraft_1.Set("g", 32.174);
+aircraft_1.Set("m", 100)

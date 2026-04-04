@@ -8,7 +8,7 @@
 %   5) Trapezoidal wing and tail horizontal surface shapes
 % -------------------------------------------------------------------------
 % Dependencies
-%   1) <Dependency 1>
+%   1) Symbolic Math Toolbox
 % -------------------------------------------------------------------------
 % Nomenclature
 %   <Symbol> = <Meaning> (<Units>)
@@ -19,7 +19,6 @@
 % Developed by Alex Vance
 classdef Aircraft < handle
 
-    % Access should be private while not in development
     properties (Access = private)
         % <"m-kg", "ft-slugs">
         units = "ft-slugs";
@@ -235,6 +234,7 @@ classdef Aircraft < handle
         %% Vertical Fin
         % Coefficients
         C_L_alpha_f = [];
+        C_L_delta_r = [];
 
         % Angles
         delta_r = [];
@@ -340,19 +340,45 @@ classdef Aircraft < handle
                 % Need to check if var_name is "units" because "units" is a
                 %   string
                 non_numeric_prop_names = ["units"];
+                current_val = obj.Get(var_name);
+
                 if ~ismember(var_name, non_numeric_prop_names)
-                    current_val = obj.Get(var_name);
                     obj.(var_name) = Aircraft.CheckInput(var_name, ...
                         val, current_val);
+                    % Add logic for determining if geometry has changed and
+                    %   if flight condition has changed. If geometry
+                    %   changes, flight condition does automatically, but
+                    %   not the other way around
+                    bool_geometry_changed = false;
+                    bool_flight_condition_changed = false;
+
+                    % Temporary for debugging
+                    obj = Solve(obj, var_name);
+
+                    if bool_geometry_changed
+                        % Remember SolveGeometry() calls
+                        %   SolveFlightCondition()
+                        obj.SolveGeometry();
+                    else
+                        % Flight condition must have been the only thing to
+                        %   change then because we're in the "double" class
+                        %   only branch, meaning a numeric property has
+                        %   changed
+                        obj.SolveFlightCondition();
+                    end
                 else
                     if var_name == "units"
                         if ~ismember(val, ["m-kg", "ft-slugs"])
+                            
+                            % Invalid input, should not change the value
                             warning("Invalid input for 'units' " + ...
                                 "argument\nValid inputs are <'m-kg'" + ...
                                 ", 'ft-slugs'>\nDefault is 'ft-slugs'");
-                            obj.units = "ft-slugs";
+                            obj.units = current_val;
                         else
                             obj.units = val;
+                            new_units = val;
+                            SolveUnits(new_units);
                         end
                     else
                         obj.(var_name) = val;
@@ -375,110 +401,110 @@ classdef Aircraft < handle
 
         %% Solvers
         % Solves for, but does not return, the input variable
-        % -----------------------------------------------------------------
-        % Arguments
-        %   assignee = variable name to be solved for as a string
-        %   equations = string array of equations, which are themselves
-        %       strings
-        %   required_var_sets = cell array of cell arrays; the inner cell
-        %       arrays are sets of variable names that are part of one
-        %       equation
-        % -----------------------------------------------------------------
-        % Comments
-        %   1) Elements of arguments should match up with those of
-        %       equations and required_var_sets, i.e. equations(1) should
-        %       match up with required_var_sets{1}, where
-        %       equations(1) returns a string, and required_var_sets{1}
-        %       returns a cell array that is a set of the variable names
-        %       in equations(1)
-        %   2) Ultimately, the property of obj with the name matching the
-        %       string assignee will be assigned the value resulting from
-        %       evaluating the string returned by equations(1) if all of
-        %       the variables named by elements in the cell array returned
-        %       by required_var_sets{1} are known (or *solveable* - coming
-        %       soon!)
-        function obj = Solve(obj, assignee, equations)
-            %% From equations, get required variable sets
-            required_var_sets = GetRequired_Vars(equations);
-            % For iterating through all variables
-            num_equations = length(required_var_sets);
-            
-            %% Initialize required variable references
-            for i_equation = 1:num_equations
-                var_set = required_var_sets{i_equation};
-                num_vars = length(var_set);
-                for i_var = 1:num_vars
-                    var_name = var_set{i_var};
-                    var = obj.(var_name);
+        function obj = Solve(obj, var_name)
+            filename_equations = append(pwd, "\permutations.mat");
+            equations = load(filename_equations, var_name);
+            equations = equations.(var_name)';
 
-                    eval(append(var_name, " = var;"));
+            %% From equations, get required variable sets
+            required_var_sets = Aircraft.GetRequired_Vars(equations);
+            % Get master_var_list for loading more equations
+            unique_var_list = unique([required_var_sets{:}])';
+            num_unique_vars = length(unique_var_list);
+
+            %% Initialize required variable references
+            loaded_var_names = strings(1);
+            for i_var = 1:num_unique_vars
+                this_var_name = unique_var_list(i_var);
+                val = obj.(this_var_name);
+
+                eval(append(this_var_name, " = val;"));
+                loaded_var_names(i_var) = this_var_name;
+            end
+
+            % Remove the variable that this call of Solve() was for in the
+            %   first place
+            unique_var_list = unique_var_list(unique_var_list ~= var_name);
+            unique_var_list_cell = cellstr(unique_var_list);
+            num_vars_major = length(unique_var_list);
+
+            % Load other vars' equations - redefine equations
+            equations_master = load(filename_equations, unique_var_list_cell{:});
+
+            for i_var_major = 1:num_vars_major
+                var_name_major = unique_var_list(i_var_major);
+                equations = equations_master.(var_name_major);
+                num_equations = length(equations);
+
+                required_var_sets = Aircraft.GetRequired_Vars(equations);
+
+                for i_equation = 1:num_equations
+                    var_set = required_var_sets{i_equation};
+                    num_vars = length(var_set);
+
+                    for i_var_minor = 1:num_vars
+                        var_name_minor = var_set(i_var_minor);
+                        if ~exist(var_name_minor, "var")
+                            val = obj.(var_name_minor);
+                            eval(append(var_name_minor, " = val;"));
+
+                            if ~ismember(var_name_minor, loaded_var_names)
+                                next_var_index = length(loaded_var_names) + 1;
+                                loaded_var_names(next_var_index) = var_name_minor;
+                            end
+                        end
+                    end
                 end
             end
+            loaded_var_names = loaded_var_names';
 
             %% Checks if any equations can be solved
-            for i_equation = 1:num_equations
-                var_set = required_var_sets{i_equation};
-                equation = equations(i_equation);
+            for i_var_major = 1:num_vars_major
+                var_name_major = unique_var_list(i_var_major);
+                equations = equations_master.(var_name_major);
+                num_equations = length(equations);
 
-                % Later possibly add in solveability checker recursion here
-                if ~any(cellfun(@(name) isempty(obj.(name)), var_set))
-            
-                    obj.(assignee) = eval(equation);
-                    return;
-                end
-            end
-        
-            %% Prints out unknown required variables preventing the solve
-            warning("Solve_: insufficient known variables to " + ...
-                "solve for %s", assignee);
-            fprintf("Unknown variables:\n")
-            for i_equation = 1:num_equations
-                var_set = required_var_sets{i_equation};
-                num_vars = length(var_set);
+                required_var_sets = Aircraft.GetRequired_Vars(equations);
 
-                for i_var = 1:num_vars
-                    var_name = var_set{i_var};
-                    var = eval(var_name);
-                    if isempty(var)
-                        fprintf("%s\n", var_name);
-                    end
-                end
+                for i_equation = 1:num_equations
+                    var_set = required_var_sets{i_equation};
 
-                % If at the *end* of a var_set but not in the *last*
-                %   var_set, print "or" to denote the end of a grouped set
-                %   of required variables
-                if i_var == num_vars
-                    if i_equation ~= num_equations
-                        fprintf("--------or--------\n");
-                    else
-                        fprintf("------------------\n");
+                    % Removes name of variable we're trying to solve for
+                    %   from the list of those we're checking the values of
+                    var_set = var_set(var_set ~= var_name_major);
+
+                    if ~any(cellfun(@(name) isempty(obj.(name)), var_set))
+                        equation = equations(i_equation);
+                        eval(equation);
                     end
                 end
             end
 
+            % Assign all non-empty variables that aren't what was
+            %   originally fed into Solve() to matching properties of obj
+            num_loaded_vars = length(loaded_var_names);
+
+            for i = 1:num_loaded_vars
+                var_name = loaded_var_names(i);
+                val = eval(var_name);
+                 if ~isempty(val)
+                    obj.(var_name) = val;
+                 end
+            end
             return;
         end
 
-        % Returns a cell array of unique variables for every input equation
-        % -----------------------------------------------------------------
-        % Arguments
-        %   equations = string or string array of equations
-        % -----------------------------------------------------------------
-        % Comments
-        %   1) Don't use "sqrt()"
-        %   2) Don't use dot operators (no element-wise operators,
-        %       operands should all be scalars)
-        %   3) Only use parenthesis, no square brackets or curly braces
-        function required_vars = GetRequired_Vars(equations)
-            num_equations = length(equations);
-            required_vars = cell(1, num_equations);
-            delimiters = ["+", "-", "*", "/", "^", "(", ")", ";"];
-            for i_equation = 1:num_equations
-                equation = equations(i_equation);
-                equation = erase(equation, delimiters);
-                terms = unique(strsplit(equation));
-                required_vars{i_equation} = terms;
-            end
+        % Subsequently calls SolveFlightCondition() because geometry
+        %   changing changes the flight condition
+        function obj = SolveGeometry(obj)
+            return;
+        end
+
+        function obj = SolveFlightCondition(obj)
+            return;
+        end
+
+        function obj = SolveUnits(obj)
             return;
         end
 
@@ -490,6 +516,38 @@ classdef Aircraft < handle
         function bool_IsSolveable = GetSolveability(var_name)
             equations = obj.(var_name).equations;
             bool_IsSolveable = true;
+
+            % Implement later as option for user to check something's
+            %   solveability. Default should NOT show though, since this
+            %   may get used in Solve() to go back and see if things become
+            %   solevable *while* Solve() is running
+            %% Prints out unknown required variables preventing the solve
+            % warning("Solve_: insufficient known variables to " + ...
+            %     "solve for %s", var_name);
+            % fprintf("Unknown variables:\n")
+            % for i_equation = 1:num_equations
+            %     var_set = required_var_sets{i_equation};
+            %     num_vars = length(var_set);
+            % 
+            %     for i_var = 1:num_vars
+            %         var_name = var_set{i_var};
+            %         var = eval(var_name);
+            %         if isempty(var)
+            %             fprintf("%s\n", var_name);
+            %         end
+            %     end
+            % 
+            %     % If at the *end* of a var_set but not in the *last*
+            %     %   var_set, print "or" to denote the end of a grouped set
+            %     %   of required variables
+            %     if i_var == num_vars
+            %         if i_equation ~= num_equations
+            %             fprintf("--------or--------\n");
+            %         else
+            %             fprintf("------------------\n");
+            %         end
+            %     end
+            % end
 
             return;
         end
@@ -525,6 +583,22 @@ classdef Aircraft < handle
                         "class ""double""", var_name, new_val);
                 new_val = current_val;                
             end
+            return;
+        end
+
+        % Returns a cell array of unique variables for every input equation
+        function required_var_sets = GetRequired_Vars(equations)
+            num_equations = length(equations);
+
+            % Get all unique variables
+            required_var_sets = {};
+            for i_equation = 1:num_equations
+                equation = equations(i_equation);
+                vars = string(symvar(equation))';
+
+                required_var_sets{i_equation} = vars;
+            end
+            required_var_sets = required_var_sets';
             return;
         end
     end
