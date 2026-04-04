@@ -315,48 +315,14 @@ classdef Aircraft < handle
     methods (Access = public)
 
         %% Constructor
-        function obj = Aircraft(args)
-        
-            % Allows arguments to be optional and assigned in the function
-            %   call as in: GetResult(<varname> = <value>, ...)
-        
-            % Classify Non-Optional Arguments
-            arguments
-                args.?Aircraft
-            end
-            arg_names = fieldnames(args);
-            num_args = length(arg_names);
-            
-            % Input checking
-            for i_arg = 1:num_args
-                arg_name = arg_names{i_arg};
-                arg_val = args.(arg_name);
-
-                if arg_name ~= "units"
-                    arg_val = Aircraft.CheckInput(arg_name, arg_val, []);
-                else
-                    if arg_val ~= "m-kg" && arg_val ~= "ft-slugs"
-                        warning("Invalid input for 'units' " + ...
-                            "argument\nValid inputs are <'m-kg', " + ...
-                            "'ft-slugs'>\nDefault is 'ft-slugs'");
-                        args.units = "ft-slugs";
-                    end
-                end
-            end
-
-            for i_arg = 1:length(arg_names)
-                arg_name = arg_names{i_arg};
-                arg_val = args.(arg_name);
-                obj.(arg_name) = arg_val;
-            end
-        
+        function obj = Aircraft()      
             return;
         end
 
         %% Copy Constructor
         function new_obj = copy(obj)
             new_obj = Aircraft();
-            prop_names = properties(obj);
+            prop_names = GetPropNames(obj);
             num_props = length(prop_names);
 
             for i_prop = 1:num_props
@@ -420,7 +386,7 @@ classdef Aircraft < handle
                     warning("No property ""%s"" of Aircraft", var_name);
                 end
             else
-                warning("Invalid class ""%s"" for argument" + ...
+                warning("Invalid class ""%s"" for argument " + ...
                     """var_name""", class(var_name));
             end
         end
@@ -437,7 +403,18 @@ classdef Aircraft < handle
                     obj.(var_name) = Aircraft.CheckInput(var_name, ...
                         val, current_val);
                 else
-                    obj.(var_name) = val;
+                    if var_name == "units"
+                        if ~ismember(val, ["m-kg", "ft-slugs"])
+                            warning("Invalid input for 'units' " + ...
+                                "argument\nValid inputs are <'m-kg'" + ...
+                                ", 'ft-slugs'>\nDefault is 'ft-slugs'");
+                            obj.units = "ft-slugs";
+                        else
+                            obj.units = val;
+                        end
+                    else
+                        obj.(var_name) = val;
+                    end
                 end
             else
                 warning("No property ""%s"" of Aircraft", var_name);
