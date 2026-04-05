@@ -360,6 +360,6 @@ if bool_test_set
 end
 
 %% Testing Area
-aircraft_1 = Aircraft();
-aircraft_1.Set("g", 32.174);
+aircraft_1 = Aircraft()
+aircraft_1.Set("g", 32.174)
 aircraft_1.Set("m", 100)
