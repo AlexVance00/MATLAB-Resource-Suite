@@ -36,7 +36,7 @@ if bool_save_equations
                          "C_L_0 = C_L_0_w + C_L_alpha_w * i_w + eta_t * (S_t/S_w) * (C_L_0_t - C_L_alpha_t * epsilon_0_t);";
                          "C_L_alpha = C_L_alpha_w + eta_t * (S_t/S_w) * C_L_alpha_t * (1 - epsilon_alpha_t);";
                          "C_L_i_t = eta_t * (S_t/S_w) * C_L_alpha_t;";
-                         "C_L_delta_e = eta_t * (S_t/S_w) * C_L_delta_e;";
+                         "C_L_delta_e = eta_t * (S_t/S_w) * C_L_delta_e_t;";
                          "n = 1 + u * q_b / g;";
                          "C_w = W / (q_bar_w * S_w);";
                          "mu = m / (0.5 * rho * S_w * c_bar_w);";
@@ -59,7 +59,7 @@ if bool_save_equations
                          "C_l_delta_r = (q_bar_f/q_bar_w) * (S_f/S_w) * (y_ac_f - z_cg) / b_w * C_L_delta_r;";
                          "C_l_delta_a = (tau_w * c_r_w * C_L_alpha_w / S_w) * (b_w/2) * (0.5*eta_2^2 + ((lambda_w - 1)/3)*eta_2^3 - 0.5*eta_1^2 - ((lambda_w - 1)/3)*eta_1^3);";
                          "C_l_r = 2 * (q_bar_f/q_bar_w) * (S_f/S_w) * (x_ac_f - x_cg) / b_w * (y_ac_f - z_cg) / b_w * C_L_alpha_f;";
-                         "C_l_p = -(1/12) * ((1 + 3*lambda_w)/(1 + lambda_w)) * (c_l_alpha_w + c_d_0);"; % trapezoidal wing
+                         "C_l_p = -(1/12) * ((1 + 3*lambda_w)/(1 + lambda_w)) * (c_l_alpha_w + c_d_0_w);"; % trapezoidal wing
                          "n = 1 / cos(phi);";
                          "psi_dot = (g/u) * tan(phi);";
                          "W = m * g";
@@ -69,7 +69,25 @@ if bool_save_equations
                          "r_b = -theta_dot * sin(phi) + psi_dot * cos(theta) * cos(phi);";
                          "phi_dot = p_b + q_b * sin(phi) * tan(theta) + r_b * cos(phi) * tan(theta);";
                          "theta_dot = q_b * cos(phi) - r_b * sin(phi);";
-                         "psi_dot = q_b * sin(phi) * sec(theta) + r_b * cos(phi) * sec(theta);"];
+                         "psi_dot = q_b * sin(phi) * sec(theta) + r_b * cos(phi) * sec(theta);";
+                         "delta_u_dot = (X_u + X_T_u) * delta_u + X_alpha * delta_alpha - g * cos(theta_1) * delta_theta + X_delta_e * delta_delta_e;";
+                         "delta_alpha_dot = (1 / (u_1 - Z_alpha_dot)) * (Z_u * delta_u + Z_alpha * delta_alpha + (u_1 + Z_q) * delta_q - g * sin(theta_1) * delta(theta) + Z_delta_e * delta_delta_e);";
+                         "delta_q_dot = M_alpha_dot * delta_alpha_dot + (M_u + M_T_u) * delta_u + (M_alpha + M_T_alpha) * delta_alpha + M_q * delta_q + M_delta_e * delta_delta_e;";
+                         "delta_theta_dot = delta_q;";
+                         "X_u = - (q_bar_1 * S_w) / (m * u_1) * (C_D_u + 2 * C_D_1);";
+                         "X_T_u = (q_bar_1 * S_w) / (m * u_1) * (C_T_u + C_T_1);";
+                         "X_alpha = - (q_bar_1 * S_w) / m * (C_D_alpha - C_L_1);";
+                         "X_delta_e = - (q_bar_1 * S_w) / m * C_D_delta_e;";
+                         "Z_u = - (q_bar_1 * S_w) / (m * u_1) * (C_L_u + 2 * C_L_1);";
+                         "Z_alpha = - (q_bar_1 * S_w) / m * (C_L_alpha + C_D_1);";
+                         "Z_q = - (q_bar_1 * S_w * c_bar_w) / (2 * m * u_1) * C_L_q;";
+                         "Z_alpha_dot = - (q_bar_1 * S_w * c_bar_w) / (2 * m * u_1) * C_L_alpha_dot;";
+                         "Z_delta_e = - (q_bar_1 * S_w) / m * C_L_delta_e;";
+                         "M_u = (q_bar_1 * S_w * c_bar_w) / (I_yy * u_1) * (C_M_u + 2 * C_M_1);";
+                         "M_T_u = (q_bar_1 * S_w * c_bar_w) / (I_yy * u_1) * (C_M_T_u + 2 * C_M_T_1);";
+                         "M_alpha = (q_bar_1 * S_w * c_bar_w) / I_yy * C_M_alpha;";
+                         "M_T_alpha = (q_bar_1 * S_w * c_bar_w) / I_yy * C_M_T_alpha;";
+                         "M_q = (q_bar_1 * S_w * c_bar_w^2) / (2 * I_yy * u_1) * C_M_q;"];
     if size(equations) ~= size(unique(equations))
         warning("Duplicate equations detected\n");
     end
@@ -99,9 +117,6 @@ if bool_make_equation_permutations
     % Write in recognizeable form for sym toolbox
     equations = replace(equations, "=", "==");
     equations = erase(equations, ";");
-    
-    % Still in progress
-    % -----------------
 
     % Initialize equation set structure
     master_var_list_cell = cellstr(master_var_list);
@@ -124,20 +139,24 @@ if bool_make_equation_permutations
                 permutation = solve(equation, var);
 
                 % Skip if unsolvable or trivial
-                if isempty(permutation) || permutation == var_name
+                if isempty(permutation) || any(string(permutation) == var_name)
                     continue;
                 end
-
+                
                 permutation_name = string(permutation);
                 permutation_execution_line = var_name + " = " + permutation_name + ";";
+
+                delta_num_equations_this_var = length(permutation_execution_line);
                 
                 if equation_sets.(var_name) ~= ""
-                    num_permutations_this_var = length(equation_sets.(var_name)) + 1;
-                else
                     num_permutations_this_var = length(equation_sets.(var_name));
+                else
+                    num_permutations_this_var = 0;
                 end
+
+                num_permutations_this_var = num_permutations_this_var + delta_num_equations_this_var;
                 
-                equation_sets.(var_name)(num_permutations_this_var) = permutation_execution_line;
+                equation_sets.(var_name)(num_permutations_this_var - delta_num_equations_this_var + 1:num_permutations_this_var) = permutation_execution_line;
             catch
                 fprintf("Could not solve equation %d for %s\n", i_equation, var_name);
             end
