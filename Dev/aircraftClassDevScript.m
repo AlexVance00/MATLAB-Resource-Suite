@@ -379,6 +379,22 @@ if bool_test_set
 end
 
 %% Testing Area
-aircraft_1 = Aircraft()
-aircraft_1.Set(["g"; "m"], [32.174; 100])
-aircraft_1.Set("m", 1000)
+aircraft_1 = Aircraft();
+aircraft_1.Set(["g"; "m"], [32.174; 100]);
+aircraft_1.Set("m", 1000);
+
+% C_L_alpha = C_L_alpha_w + eta_t * (S_t/S_w) * C_L_alpha_t * (1 - epsilon_alpha_t)
+var_names = ["C_L_alpha";
+             "C_L_alpha_w";
+             "eta_t";
+             "S_t";
+             "C_L_alpha_t";
+             "epsilon_alpha_t"];
+values = [1.5;
+          0.6;
+          0.7;
+          90;
+          0.4;
+          0.01];
+aircraft_2 = aircraft_1.copy()
+aircraft_2.Set(var_names, values)
