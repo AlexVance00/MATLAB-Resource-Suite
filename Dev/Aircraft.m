@@ -20,7 +20,7 @@
 classdef Aircraft < handle
 
     properties (Access = private)
-        solvable_properties = "";
+        solvable_properties = [];
 
         % <"m-kg", "ft-slugs">
         units = "ft-slugs";
@@ -398,54 +398,61 @@ classdef Aircraft < handle
         
         %% Universal Setter
         % Vectorized to allow vector inputs for new_val
-        function obj = Set(obj, var_name, new_val)
+        %   var_names must be same size as new_vals
+        function obj = Set(obj, var_names, new_vals)
             % For Solve() later
             filename_equations = append(pwd, "\permutations.mat");
             all_equations = load(filename_equations);
 
+            non_numeric_prop_names = ["units"];
+            off_limits_prop_names = ["solvable_properties"];
+
             prop_names = GetPropNames(obj);
-            if ismember(var_name, prop_names)
-                % Need to check if var_name is "units" because "units" is a
-                %   string
-                non_numeric_prop_names = ["units"];
-                off_limits_prop_names = ["solvable_properties"];
-                current_val = obj.Get(var_name);
 
-                if ~ismember(var_name, non_numeric_prop_names)
-                    num_vals = length(new_val);
-                    for i = 1:num_vals
-                        val = new_val(i);
+            num_vars = length(var_names);
+            for i_var = 1:num_vars
+                var_name = var_names(i_var);
+                new_val = new_vals(i_var);
+
+                if ismember(var_name, prop_names)
+                    % Need to check if var_name is "units" because "units" is a
+                    %   string
+                    current_val = obj.Get(var_name);
+    
+                    if ~ismember(var_name, non_numeric_prop_names)
                         obj.(var_name) = Aircraft.CheckInput(var_name, ...
-                            val, current_val);
-
+                            new_val, current_val);
+    
                         % Back solve now-solvable values
-                        obj = Solve(obj, var_name, all_equations, []);
-                    end
-                elseif ~ismember(var_name, off_limits_prop_names)
-                    if var_name == "units"
-                        if ~isscalar(new_val)
-                            warning("Invalid non-scalar input for " + ...
-                                "'units' argument\nValid inputs are " + ...
-                                "<'m-kg', 'ft-slugs'>\nDefault is " + ...
-                                "'ft-slugs'");
-                        elseif ~ismember(new_val, ["m-kg", "ft-slugs"])
-                            
-                            % Invalid input, should not change the value
-                            warning("Invalid input for 'units' " + ...
-                                "argument\nValid inputs are <'m-kg'" + ...
-                                ", 'ft-slugs'>\nDefault is 'ft-slugs'");
-                            obj.units = current_val;
+                        obj = Solve(obj, var_name, all_equations, "");
+                    elseif ~ismember(var_name, off_limits_prop_names)
+                        if var_name == "units"
+                            if ~isscalar(new_val) && isstring(new_val)
+                                warning("Invalid non-scalar or " + ...
+                                    "non-char input for 'units' " + ...
+                                    "<'m-kg', 'ft-slugs'>\n" + ...
+                                    "Default is 'ft-slugs'");
+                            elseif ~ismember(new_val, ["m-kg", "ft-slugs"])
+                                
+                                % Invalid input, should not change the value
+                                warning("Invalid input for 'units' " + ...
+                                    "argument\nValid inputs are <'m-kg'" + ...
+                                    ", 'ft-slugs'>\nDefault is 'ft-slugs'");
+                                obj.units = current_val;
+                            else
+                                if new_val == obj.units
+                                    return;
+                                end
+                                obj.units = new_val;
+                                SolveUnits(new_val);
+                            end                        
                         else
-                            obj.units = new_val;
-                            new_units = new_val;
-                            SolveUnits(new_units);
-                        end                        
-                    else
-                        obj.(var_name) = new_val;
+                            obj.(var_name) = new_val;
+                        end
                     end
+                else
+                    warning("No valid property ""%s"" of Aircraft", var_name);
                 end
-            else
-                warning("No valid property ""%s"" of Aircraft", var_name);
             end
 	        return;
         end
@@ -519,11 +526,13 @@ classdef Aircraft < handle
                     if ~any(arrayfun(@(name) isempty(obj.(name)), var_set)) && ~isempty(var_set)
                         % Get equation
                         equation = equations_this_var(i_equation);
-                        % Evaluate equation and calculate var_name_major's
+                        % Evaluate equation and calculate var_name's
                         %   new value
                         eval(equation);
                         % Assign this new value to its property in obj
                         obj.(var_name) = eval(var_name);
+                        % For debugging
+                        % fprintf("SOLVED %s\n", var_name)
 
                         % Add potentially-now-solvable variables to
                         %   solvable_properties
@@ -533,23 +542,29 @@ classdef Aircraft < handle
                         var_sets_to_check = Aircraft.GetRequired_Vars(equations_to_check);
 
                         % Get unique variables from those sets
-                        vars_to_add = unique([var_sets_to_check{:}])';
-
-                        % Remove the variable that was just solved from the
-                        %   set of uniques
-                        vars_to_add = vars_to_add(~ismember(vars_to_add, var_name));
+                        vars_to_add = unique([var_sets_to_check{:}])'; 
 
                         % Add vars to solvable properties, but make them
                         %   unique
                         obj.solvable_properties = unique([obj.solvable_properties; vars_to_add]);
 
-                        fprintf("SOLVED %s\n", var_name)
+                        % Remove the variables from that equation that was
+                        %   just solved from solvable_properties because
+                        %   it's assumed they are all known now
+                        % Do the same with the variable this entire Solve()
+                        %   call is solving for, otherwise circular
+                        %   recursion will occur
+                        var_names_to_prune = unique([var_set'; var_name]);
+
+                        obj.solvable_properties = obj.solvable_properties(~ismember(obj.solvable_properties, var_names_to_prune));
+
                         % Skip to next major variable
                         return;
                     end
                     % No equations were solveable
                     if i_equation == num_equations
-                        fprintf("Could not solve %s\n", var_name)
+                        % For debugging
+                        % fprintf("Could not solve %s\n", var_name);
 
                         % Remove now non-solvable var from
                         %   solvable_properties
@@ -559,20 +574,97 @@ classdef Aircraft < handle
                 end
             end
 
-            %% Checks if any equations can be solved
+            %% Try directly solving
             % For debugging
-            fprintf("Vars to iterate through to solve %s: %d\n", var_name, num_vars_major);
+            % fprintf("Direct-solving: vars to iterate through to solve %s: %d\n", var_name, num_vars_major);
             for i_var_major = 1:num_vars_major
                 % Get this var's name
                 var_name_major = unique_var_list(i_var_major);
-                % if var_name_major == "C_L_0_w"
-                %     pause
-                % end
-                if ~ismember(obj.solvable_properties, var_name_major)
+                
+                if ~ismember(var_name_major, obj.solvable_properties)
+                    continue;
+                end
+
+                equations_this_var = all_equations.(var_name_major)';
+                num_equations = length(equations_this_var);
+                required_var_sets = Aircraft.GetRequired_Vars(equations_this_var);
+
+                for i_equation = 1:num_equations
+                    var_set = required_var_sets{i_equation};
+                    var_set = var_set(~ismember(var_set, var_name_major));
+                    
+                    if ~any(arrayfun(@(name) isempty(obj.(name)), var_set)) && ~isempty(var_set)
+                        % Get equation
+                        equation = equations_this_var(i_equation);
+                        % Evaluate equation and calculate var_name_major's
+                        %   new value
+                        eval(equation);
+                        % Assign this new value to its property in obj
+                        obj.(var_name_major) = eval(var_name_major);
+                        % For debugging
+                        % fprintf("SOLVED %s\n", var_name_major)
+
+                        % Add potentially-now-solvable variables to
+                        %   solvable_properties. Start with getting
+                        %   equation permutations for the variable that was
+                        %   just solved
+                        equations_to_check = all_equations.(var_name_major)';
+
+                        % Get variable sets from these equations
+                        var_sets_to_check = Aircraft.GetRequired_Vars(equations_to_check);
+
+                        % Get unique variables from those sets
+                        vars_to_add = unique([var_sets_to_check{:}])';
+
+                        % Add vars to solvable properties, but make them
+                        %   unique
+                        obj.solvable_properties = unique([obj.solvable_properties; vars_to_add]);
+
+                        % Remove the variables from that equation that was
+                        %   just solved from solvable_properties because
+                        %   it's assumed they are all known now
+                        % Do the same with the variable this entire Solve()
+                        %   call is solving for, otherwise circular
+                        %   recursion will occur
+                        var_names_to_prune = unique([var_set'; var_name_major; var_name]);
+
+                        % Only need to update blacklisted_var_names for
+                        %   this solve operation because this is the only
+                        %   one where there's a possibility for the code to
+                        %   conintue on to a recursive call
+                        blacklisted_var_names = [blacklisted_var_names; var_names_to_prune];
+
+                        obj.solvable_properties = obj.solvable_properties(~ismember(obj.solvable_properties, var_names_to_prune));
+
+                        % Break for loop and move on to next var_name_major
+                        %   since this one is now solved
+                        break;
+                    end
+                end
+                % If var_name_major isn't solvable at this time, remove it
+                %   from solvable_properties pool and move on to the next
+                %   var_name major
+                % This means i_equation = num_equations- it ran to the end
+                if i_equation == num_equations
+                    % For debugging
+                    % fprintf("Could not solve %s\n", var_name_major);
+                    obj.solvable_properties = obj.solvable_properties(~ismember(obj.solvable_properties, var_name_major));
+                end
+            end
+
+            %% Direct solve failed, enter sub-level solving
+            % For debugging
+            % fprintf("Sub-level solving: vars to iterate through to solve %s: %d\n", var_name, num_vars_major);
+            for i_var_major = 1:num_vars_major
+                % Get this var's name
+                var_name_major = unique_var_list(i_var_major);
+                if ~ismember(var_name_major, obj.solvable_properties)
                     continue;
                 end
                 obj = Solve(obj, var_name_major, all_equations, blacklisted_var_names);
             end
+            % For debugging
+            % fprintf("Nothing could be solved for after setting %s", var_name);
             return;
         end
 

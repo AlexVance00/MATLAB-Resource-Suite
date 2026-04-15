@@ -380,5 +380,5 @@ end
 
 %% Testing Area
 aircraft_1 = Aircraft()
-aircraft_1.Set("g", 32.174)
-aircraft_1.Set("m", 100)
+aircraft_1.Set(["g"; "m"], [32.174; 100])
+aircraft_1.Set("m", 1000)
