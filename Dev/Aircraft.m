@@ -10,6 +10,13 @@
 % Dependencies
 %   1) Symbolic Math Toolbox
 % -------------------------------------------------------------------------
+% Comments
+%   1) Do not name any property "z"- be creative and name it differently.
+%       This is because it conflicts with a feature of the symbolic
+%       toolbox. The solve() function in the symbolic toolbox, when it
+%       cannot find a closed-form solution to an equation, fills in a dummy
+%       variable "z" to the equation string as a root-substitution variable
+% -------------------------------------------------------------------------
 % Nomenclature
 %   <Symbol> = <Meaning> (<Units>)
 % -------------------------------------------------------------------------
@@ -485,6 +492,8 @@ classdef Aircraft < handle
 
             % Get master_var_list for loading more equations
             unique_var_list = unique([required_var_sets{:}])';
+            % See Class Comment (1)
+            unique_var_list = unique_var_list(~ismember(unique_var_list, "z"));
             num_vars_major = length(unique_var_list);
 
             % Add vars to solvable properties, but make them
@@ -493,10 +502,33 @@ classdef Aircraft < handle
             
             %% Initialize required variable references
             % Do this before removing blacklisted_var_names
+            % And make additional list of dependency variables that need to
+            %   be initialized
+            dependency_var_list = [];
             for i_var = 1:num_vars_major
                 % Get var_name
                 this_var_name = unique_var_list(i_var);
 
+                % Get dependency variables, make unique later to save
+                %   compute now but space later
+                equations_this_var = all_equations.(this_var_name)';
+                required_var_sets = Aircraft.GetRequired_Vars(equations_this_var);
+                dependency_var_list = [dependency_var_list; [required_var_sets{:}]'];
+                
+                % Pull var's val
+                val = obj.(this_var_name);
+
+                % Initialize var_name with val
+                eval(append(this_var_name, " = val;"));
+            end
+            % See Class Comment (1)
+            dependency_var_list = unique(dependency_var_list(~ismember(dependency_var_list, "z")));
+
+            % Initialize dependency variables now
+            for i_var = 1:length(dependency_var_list)
+                % Get var_name
+                this_var_name = dependency_var_list(i_var);
+                
                 % Pull var's val
                 val = obj.(this_var_name);
 
@@ -519,12 +551,16 @@ classdef Aircraft < handle
             %% Base Case
             % unique_var_list is empty
             if num_vars_major == 0
+                equations_this_var = all_equations.(var_name)';
+                required_var_sets = Aircraft.GetRequired_Vars(equations_this_var);
                 for i_equation = 1:num_equations
                     var_set = required_var_sets{i_equation};
-                    var_set = var_set(~ismember(var_set, var_name));
+                    % See Comment 1) for the addition of "z"
+                    var_set = var_set(~ismember(var_set, [var_name; "z"]));
 
                     if ~any(arrayfun(@(name) isempty(obj.(name)), var_set)) && ~isempty(var_set)
                         % Get equation
+                        
                         equation = equations_this_var(i_equation);
                         % Evaluate equation and calculate var_name's
                         %   new value
@@ -591,8 +627,9 @@ classdef Aircraft < handle
 
                 for i_equation = 1:num_equations
                     var_set = required_var_sets{i_equation};
-                    var_set = var_set(~ismember(var_set, var_name_major));
-                    
+                    % See Comment 1) for the addition of "z"
+                    var_set = var_set(~ismember(var_set, [var_name_major; "z"]));
+
                     if ~any(arrayfun(@(name) isempty(obj.(name)), var_set)) && ~isempty(var_set)
                         % Get equation
                         equation = equations_this_var(i_equation);
