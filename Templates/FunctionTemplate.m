@@ -3,7 +3,7 @@ function result = FunctionTemplate(args)
 %                                                     <Output> in (<Units>)
 % -------------------------------------------------------------------------
 % Arguments
-%   <Symbol> = <Explanation> (<Units>)
+%   #) <Symbol> = <Explanation> (<Units>)
 % -------------------------------------------------------------------------
 % Dependencies
 %   #) <Dependency Filepath>
@@ -56,6 +56,7 @@ function result = FunctionTemplate(args)
     % Intermediate Calculations
 
     % Final Calculations
+    result = [];
 
     % Display Results and/or Plotting
 
