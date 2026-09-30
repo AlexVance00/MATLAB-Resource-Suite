@@ -1,3 +1,4 @@
+function result = FunctionTemplate(args)
 % <Function Purpose>
 %                                                     <Output> in (<Units>)
 % -------------------------------------------------------------------------
@@ -17,7 +18,7 @@
 %   - <Later Version>
 % -------------------------------------------------------------------------
 % Developed by Alex Vance (AlexVance00 on Github)
-function result = FunctionTemplate(args)
+% -------------------------------------------------------------------------
 
     % Allows arguments to be optional and assigned in the function call
     %   as in: FunctionTemplate(<arg_name> = <arg_val>, ...)
