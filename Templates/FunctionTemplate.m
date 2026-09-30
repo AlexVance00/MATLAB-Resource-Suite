@@ -1,14 +1,14 @@
 % <Function Purpose>
-% <Output> in (<Units>)
-% -------------------------------------------------------------------------
-% Assumptions
-%   1) <Assumption 1>
+%                                                     <Output> in (<Units>)
 % -------------------------------------------------------------------------
 % Arguments
 %   <Symbol> = <Explanation> (<Units>)
 % -------------------------------------------------------------------------
 % Dependencies
-%   1) <Dependency 1>
+%   #) <Dependency Filepath>
+% -------------------------------------------------------------------------
+% Assumptions
+%   1) <Assumption 1>
 % -------------------------------------------------------------------------
 % Sources
 %   1) <Source 1>
@@ -16,19 +16,19 @@
 % MATLAB Version <Oldest Version>, also compatible with:
 %   - <Later Version>
 % -------------------------------------------------------------------------
-% Developed by Alex Vance
+% Developed by Alex Vance (AlexVance00 on Github)
 function result = FunctionTemplate(args)
 
     % Allows arguments to be optional and assigned in the function call
     %   as in: FunctionTemplate(<arg_name> = <arg_val>, ...)
 
-    % Classify Non-Optional Arguments
+    % List all argument names
     arguments
         args.arg_1 = [];
     end
     arg_name_list = fieldnames(args);
 
-    % Classify Optional Arguments - 1D String Array
+    % List those argument names which are optional in 1D string array
     optional_arg_names = [];
 
     % Makes variables out of args' fieldnames
@@ -37,14 +37,15 @@ function result = FunctionTemplate(args)
         arg_val = args.(arg_name);
 
         % Input Checking
+        % Checks if this argument was assigned
         if ~isempty(arg_val)
 
-            % Initializes given optional arguments
+            % Initializes assigned arguments
             eval(append(arg_name, " = arg_val;"));
+        % If argument was unassigned, checks if it was optional
         elseif ~ismember(arg_name, optional_arg_names)
             
-            % If any non-optional arguments are un-initialized, throws
-            %   error
+            % If unassigned argument was non-optional, throws error
             error("No input for non-optional '%s' argument", arg_name);
         end
     end
