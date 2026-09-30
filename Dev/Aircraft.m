@@ -1,14 +1,14 @@
 % Meant to track properties of an aircraft
 % -------------------------------------------------------------------------
+% Dependencies
+%   1) Symbolic Math Toolbox
+% -------------------------------------------------------------------------
 % Assumptions
 %   1) Fixed wing, non-fixed tail horizontal surface
 %   2) Rigid body
 %   3) No tail dihedral
 %   4) Lateral symmetry
 %   5) Trapezoidal wing and tail horizontal surface shapes
-% -------------------------------------------------------------------------
-% Dependencies
-%   1) Symbolic Math Toolbox
 % -------------------------------------------------------------------------
 % Comments
 %   1) Do not name any property "z"- be creative and name it differently.
@@ -23,7 +23,7 @@
 % MATLAB Version R2024b, also compatible with:
 %   - R2025a
 % -------------------------------------------------------------------------
-% Developed by Alex Vance at https://github.com/AlexVance00
+% Developed by Alex Vance (AlexVance00 on Github)
 classdef Aircraft < handle
 
     properties (Access = private)
