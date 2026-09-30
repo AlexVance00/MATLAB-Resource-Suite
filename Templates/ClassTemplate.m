@@ -1,7 +1,10 @@
 % <Class Purpose>
 % -------------------------------------------------------------------------
 % Dependencies
-%   1) <Dependency 1>
+%   #) <Dependency>
+% -------------------------------------------------------------------------
+% Assumptions
+%   #) <Assumption>
 % -------------------------------------------------------------------------
 % Nomenclature
 %   <Symbol> = <Meaning> (<Units>)
@@ -29,15 +32,13 @@ classdef ClassTemplate
         %   #) <Dependency Filepath>
         % -----------------------------------------------------------------
         % Assumptions
-        %   1) <Assumption 1>
+        %   #) <Assumption>
         % -----------------------------------------------------------------
         % Sources
-        %   1) <Source 1>
+        %   #) <Source>
         % -----------------------------------------------------------------
         % MATLAB Version <Oldest Version>, also compatible with:
         %   - <Later Version>
-        % -----------------------------------------------------------------
-        % Developed by Alex Vance (AlexVance00 on Github)
         % -----------------------------------------------------------------
         
             % Allows arguments to be optional and assigned in the function
@@ -82,7 +83,6 @@ classdef ClassTemplate
             % Display Results and/or Plotting
         
             return;
-        end
         end
 
     end

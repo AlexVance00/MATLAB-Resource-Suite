@@ -9,10 +9,10 @@ function result = FunctionTemplate(args)
 %   #) <Dependency Filepath>
 % -------------------------------------------------------------------------
 % Assumptions
-%   1) <Assumption 1>
+%   #) <Assumption>
 % -------------------------------------------------------------------------
 % Sources
-%   1) <Source 1>
+%   #) <Source>
 % -------------------------------------------------------------------------
 % MATLAB Version <Oldest Version>, also compatible with:
 %   - <Later Version>
