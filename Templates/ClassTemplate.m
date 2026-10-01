@@ -7,7 +7,7 @@
 %   #) <Assumption>
 % -------------------------------------------------------------------------
 % Comments
-%   1) Do not name
+%   #) <Comment>
 % -------------------------------------------------------------------------
 % Nomenclature
 %   <Symbol> = <Meaning> (<Units>)
@@ -30,18 +30,6 @@ classdef ClassTemplate
         % -----------------------------------------------------------------
         % Arguments
         %   <Symbol> = <Explanation> (<Units>)
-        % -----------------------------------------------------------------
-        % Dependencies
-        %   #) <Dependency Filepath>
-        % -----------------------------------------------------------------
-        % Assumptions
-        %   #) <Assumption>
-        % -----------------------------------------------------------------
-        % Sources
-        %   #) <Source>
-        % -----------------------------------------------------------------
-        % MATLAB Version <Oldest Version>, also compatible with:
-        %   - <Later Version>
         % -----------------------------------------------------------------
         
             % Allows arguments to be optional and assigned in the function
