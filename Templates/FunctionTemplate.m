@@ -6,16 +6,22 @@ function result = FunctionTemplate(args)
 %   #) <Symbol> = <Explanation> (<Units>)
 % -------------------------------------------------------------------------
 % Dependencies
-%   #) <Dependency Filepath>
+%   #) <Dependency>
 % -------------------------------------------------------------------------
 % Assumptions
 %   #) <Assumption>
 % -------------------------------------------------------------------------
-% Sources
+% Comments
+%   #) <Comment>
+% -------------------------------------------------------------------------
+% Sources - for referencing research
 %   #) <Source>
 % -------------------------------------------------------------------------
+% Document Version <Version>, former versions:
+%   - <Version>
+% -------------------------------------------------------------------------
 % MATLAB Version <Oldest Version>, also compatible with:
-%   - <Later Version>
+%   - <Version>
 % -------------------------------------------------------------------------
 % Developed by Alex Vance (AlexVance00 on Github)
 % -------------------------------------------------------------------------
@@ -50,6 +56,8 @@ function result = FunctionTemplate(args)
             error("No input for non-optional '%s' argument", arg_name);
         end
     end
+
+    % Constants
 
     % Unit Conversions
 
